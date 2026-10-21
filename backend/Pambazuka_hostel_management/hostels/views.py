@@ -10,3 +10,13 @@ def hostel_list(request):
     serializer = HostelSerializer(hostels, many=True)
 
     return Response(serializer.data)
+
+@api_view(['GET'])
+def hostel_detail(request, pk):
+    try:
+        hostel = Hostel.objects.get(pk=pk)
+    except Hostel.DoesNotExist:
+        return Response({"error": "Hostel not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = HostelSerializer(hostel)
+    return Response(serializer.data)
