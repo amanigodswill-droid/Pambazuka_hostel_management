@@ -16,7 +16,7 @@ class Hostel(models.Model):
     location = models.CharField(max_length=200)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
-    choices = models.CharField(max_length=10, choices=ROOM_CHOICES)
+    rooms = models.CharField(max_length=10, choices=ROOM_CHOICES)
     availability = models.PositiveIntegerField(default=0)
     distance= models.CharField(max_length=100, blank=True)
     amenities = models.JSONField(default=list, blank=True)
