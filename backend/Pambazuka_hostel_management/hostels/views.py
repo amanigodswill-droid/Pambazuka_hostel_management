@@ -62,12 +62,24 @@ def student_profile(request):
     user = request.user
     return Response({"user_id": user.id, "username": user.username, "email": user.email})
 
-@api_view(['POST'])
+@api_view(['GET','POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def create_booking(request):
+    if request.method == 'GET':
+        bookings = Booking.objects.filter(student=request.user).order_by('-date_booked')
+        serializer = BookingSerializer(bookings, many=True)
+        return Response(serializer.data)
     serializer = BookingSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save(student=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])  
+@permission_classes([IsAuthenticated])
+def student_bookings(request):
+    bookings = Booking.objects.filter(student=request.user).order_by('-date_booked')
+    serializer = BookingSerializer(bookings, many=True)
+    return Response(serializer.data)
