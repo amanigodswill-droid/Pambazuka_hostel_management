@@ -3,8 +3,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Hostel
-from .serializers import HostelSerializer
+from .models import Hostel, Booking
+from .serializers import HostelSerializer, BookingSerializer
 from .user_serializer import RegisterSerializer
 from django.contrib.auth.models import User
 from rest_framework.authentication import TokenAuthentication
@@ -61,3 +61,13 @@ def login_user(request):
 def student_profile(request):
     user = request.user
     return Response({"user_id": user.id, "username": user.username, "email": user.email})
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def create_booking(request):
+    serializer = BookingSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save(student=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
