@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Hostel(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_hostels', null=True, blank=True)
     GENDER_CHOICES = [
         ('Male', 'Male'),
         ('Female', 'Female'),

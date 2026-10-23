@@ -100,3 +100,33 @@ def cancel_booking(request, pk):
     booking.save()
     serializer = BookingSerializer(booking)
     return Response(serializer.data)
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def create_hostel(request):
+    serializer = HostelSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save(owner=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PATCH', 'DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def manage_hostel(request,pk):
+    try:
+        hostel = Hostel.objects.get(pk=pk, owner=request.user)
+    except Hostel.DoesNotExist:
+        return Response({"error": "Hostel not found or you are not the owner"}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PATCH':
+        serializer = HostelSerializer(hostel, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'DELETE':
+        hostel.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
