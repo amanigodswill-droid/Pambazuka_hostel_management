@@ -3,11 +3,13 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-
 from .models import Hostel
 from .serializers import HostelSerializer
 from .user_serializer import RegisterSerializer
 from django.contrib.auth.models import User
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 @api_view(['GET'])
 def hostel_list(request):
@@ -52,3 +54,10 @@ def login_user(request):
         return Response({"message":"Login Successful", "token": token.key, "user_id":user.id, "username":user.username})
     else:
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def student_profile(request):
+    user = request.user
+    return Response({"user_id": user.id, "username": user.username, "email": user.email})
