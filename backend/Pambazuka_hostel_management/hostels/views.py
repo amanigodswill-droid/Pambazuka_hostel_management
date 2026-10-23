@@ -83,3 +83,20 @@ def student_bookings(request):
     bookings = Booking.objects.filter(student=request.user).order_by('-date_booked')
     serializer = BookingSerializer(bookings, many=True)
     return Response(serializer.data)
+
+@api_view(['PATCH'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def cancel_booking(request, pk):
+    try:
+        booking = Booking.objects.get(pk=pk, student=request.user)
+    except Booking.DoesNotExist:
+        return Response({"error": "Booking not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    if booking.status != 'Pending':
+        return Response({"error": "Only pending bookings can be cancelled"}, status=status.HTTP_404_BAD_REQUEST)
+    
+    booking.status = 'Rejected'
+    booking.save()
+    serializer = BookingSerializer(booking)
+    return Response(serializer.data)
