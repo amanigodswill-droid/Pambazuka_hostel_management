@@ -70,6 +70,22 @@ def create_booking(request):
         bookings = Booking.objects.filter(student=request.user).order_by('-date_booked')
         serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data)
+    required_fields = ['hostels', 'full_name', 'email', 'phone', 'national_id', 'gender', 'university', 'registration_number', 'room_type', 'move_in_date', 'payment_method',]
+    for field in required_fields:
+        if not request.data.get(field):
+            return Response({'error': f'{field} is required'}, status=status.HTTP_404_BAD_REQUEST)
+    payment_method = request.data.get('payment_method')
+    payment_reference = request.data.get('payment_reference', '').strip()
+    mpesa_phone = request.data.get('mpesa_phone','').strip()
+
+    if payment_method not in['Mpesa', 'Bank']:
+        return Response({'error':'Choose M-pesa or Bank as the payment method.'}, status=status.HTTP_400_BAD_REQUEST)
+    if payment_method =='Mpesa':
+       if not mpesa_phone or not payment_reference:
+          return Response({'error':'M-Pesa phone number and transaction code are required.'}, status=status.HTTP_400_BAD_REQUEST)
+    if payment_method =='Bank' and not payment_reference:
+        return Response({'error':'Bank transaction reference is required.'}, status=status.HTTP_400_BAD_REQUEST)
+     
     serializer = BookingSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save(student=request.user)

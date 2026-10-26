@@ -46,13 +46,19 @@ class Booking(models.Model):
     ]
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookings')
     hostel = models.ForeignKey(Hostel, on_delete=models.CASCADE, related_name='bookings')
+    full_name = models.CharField(max_length=150, blank=True)
+    email = models.EmailField(blank=True)
+    phone = models.CharField(max_length=20, blank=True)
+    national_id = models.CharField(max_length=50, blank=True)
+    gender = models.CharField(max_length=10, blank=True)
+    university = models.CharField(max_length=150, blank=True)
+    registration_number = models.CharField(max_length=50, blank=True)
     room_type = models.CharField(max_length=10, choices=ROOM_TYPE_CHOICES)
-    move_in_date = models.DateField()
-    special_requests = models.TextField(blank=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     date_booked = models.DateTimeField(auto_now_add=True)
     payment_status = models.CharField(max_length=10, choices=PAYMENT_STATUS_CHOICES, default='Pending')
     payment_method = models.CharField(max_length=50, blank=True)
+    mpesa_phone = models.CharField(max_length=20, blank=True)
     payment_reference = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
