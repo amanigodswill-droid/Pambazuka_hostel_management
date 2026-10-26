@@ -55,11 +55,20 @@ def login_user(request):
     else:
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
-@api_view(['GET'])
+@api_view(['GET', 'PATCH'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def student_profile(request):
     user = request.user
+    if request.method== 'GET':
+        return Response({'user_id':user.id, 'username':user.username, 'email':user.email})
+    email = request.data.get('email')
+    if not email:
+        return Response({'error':'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
+    if User.objects.filter(email=email).exclude(id=user.id).exists():
+        return Response({'error':'This email is already in use.'}, status=status.HTTP_400_BAD_REQUEST)
+    user.email=email
+    user.save()    
     return Response({"user_id": user.id, "username": user.username, "email": user.email})
 
 @api_view(['GET','POST'])
