@@ -180,3 +180,66 @@ class BookingAPITests(TestCase):
 
         self.assertEqual(booking.status, "Rejected")
         self.assertEqual(self.hostel.availability, 4)
+
+
+class OwnerBookingAPITests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.owner1 = User.objects.create_user(
+            username="owner_one",
+            password="StrongTestPassword123!"
+        )
+        self.owner2 = User.objects.create_user(
+            username="owner_two",
+            password="StrongTestPassword123!"
+        )
+        self.student = User.objects.create_user(
+            username="booking_student_two",
+            password="StrongTestPassword123!"
+        )
+
+        self.hostel1 = Hostel.objects.create(
+            owner=self.owner1,
+            name="Owner One Hostel",
+            location="Eldoret",
+            price=5000,
+            gender="Mixed",
+            rooms="Both",
+            availability=3
+        )
+
+        self.hostel2 = Hostel.objects.create(
+            owner=self.owner2,
+            name="Owner Two Hostel",
+            location="Eldoret",
+            price=6000,
+            gender="Mixed",
+            rooms="Both",
+            availability=3
+        )
+
+        from rest_framework.authtoken.models import Token
+        token, created = Token.objects.get_or_create(user=self.owner1)
+        self.client.credentials(HTTP_AUTHORIZATION=f"Token {token.key}")
+
+    def test_owner_can_view_own_bookings(self):
+        response = self.client.get("/api/hostels/owner/bookings/")
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_owner_cannot_manage_another_owners_booking(self):
+        from .models import Booking
+
+        booking = Booking.objects.create(
+            student=self.student,
+            hostel=self.hostel2,
+            room_type="Single"
+        )
+
+        response = self.client.patch(f"/api/hostels/bookings/{booking.id}/manage/", {"status": "Approved"}, format="json")
+
+        self.assertEqual(response.status_code, 403)
+
+        booking.refresh_from_db()
+        self.assertEqual(booking.status, "Pending")
