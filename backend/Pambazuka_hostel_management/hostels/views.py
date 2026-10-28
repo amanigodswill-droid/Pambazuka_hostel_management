@@ -84,7 +84,7 @@ def create_booking(request):
         bookings = Booking.objects.filter(student=request.user).order_by('-date_booked')
         serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data)
-    required_fields = ['hostels', 'full_name', 'email', 'phone', 'national_id', 'gender', 'university', 'registration_number', 'room_type', 'move_in_date', 'payment_method',]
+    required_fields = ['hostel', 'full_name', 'email', 'phone', 'national_id', 'gender', 'university', 'registration_number', 'room_type', 'move_in_date', 'payment_method', 'payment_reference']
     for field in required_fields:
         if not request.data.get(field):
             return Response({'error': f'{field} is required'}, status=status.HTTP_404_BAD_REQUEST)
@@ -101,9 +101,20 @@ def create_booking(request):
         return Response({'error':'Bank transaction reference is required.'}, status=status.HTTP_400_BAD_REQUEST)
      
     serializer = BookingSerializer(data=request.data)
+
     if serializer.is_valid():
-        serializer.save(student=request.user)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+      hostel = serializer.validated_data['hostel']
+
+      if hostel.availability < 1:
+        return Response({'error': 'Sorry, this hostel has no available rooms.'}, status=status.HTTP_400_BAD_REQUEST)
+
+      booking = serializer.save(student=request.user, payment_status='Pending')
+
+      hostel.availability -= 1
+      hostel.save(update_fields=['availability'])
+
+      return Response(BookingSerializer(booking).data, status=status.HTTP_201_CREATED)
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
