@@ -347,6 +347,43 @@ class BookingAPITests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("error", response.data)
 
+    
+    def test_student_can_view_own_bookings(self):
+        from datetime import date, timedelta
+        from .models import Booking
+
+        Booking.objects.create(
+            student=self.student,
+            hostel=self.hostel,
+            room_type="Single",
+            move_in_date=date.today() + timedelta(days=7),
+        )
+
+        response = self.client.get("/api/hostels/bookings/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["hostel"], self.hostel.id)
+        self.assertEqual(response.data[0]["payment_status"], "Pending")
+
+    def test_student_cannot_view_another_students_booking(self):
+        from datetime import date, timedelta
+        from django.contrib.auth.models import User
+        from .models import Booking
+
+        another_student = User.objects.create_user(username="anotherstudent", password="testpassword123",)
+        Booking.objects.create(
+            student=another_student,
+            hostel=self.hostel,
+            room_type="Single",
+            move_in_date=date.today() + timedelta(days=7),
+        )
+
+        response = self.client.get("/api/hostels/bookings/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 0)
+
 class OwnerBookingAPITests(TestCase):
     def setUp(self):
         self.client = APIClient()
