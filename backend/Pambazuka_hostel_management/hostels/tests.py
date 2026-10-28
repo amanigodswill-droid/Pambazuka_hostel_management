@@ -375,3 +375,44 @@ class HostelOwnershipTests(TestCase):
         self.assertTrue(Hostel.objects.filter(
             id=self.hostel.id
         ).exists())
+
+class HostelCreationAPITests(TestCase):
+    def setUp(self):
+        from rest_framework.authtoken.models import Token
+
+        self.user = User.objects.create_user(
+            username="new_hostel_owner",
+            password="StrongTestPassword123!"
+        )
+
+        token, created = Token.objects.get_or_create(user=self.user)
+
+        self.client = APIClient()
+        self.client.credentials(HTTP_AUTHORIZATION=f"Token {token.key}")
+
+        self.hostel_data = {
+            "name": "Student Comfort Hostel",
+            "location": "Eldoret",
+            "price": "4500.00",
+            "gender": "Mixed",
+            "rooms": "Both",
+            "availability": 5,
+            "distance": "1 km from campus",
+            "amenities": ["Wi-Fi", "Water"],
+            "description": "Affordable student accommodation."
+        }
+
+    def test_authenticated_user_can_create_hostel(self):
+        response = self.client.post("/api/hostels/create/", self.hostel_data, format="json")
+
+        self.assertEqual(response.status_code, 201)
+        hostel = Hostel.objects.get(name="Student Comfort Hostel")
+        self.assertEqual(hostel.owner, self.user)
+
+    def test_unauthenticated_user_cannot_create_hostel(self):
+        self.client.credentials()
+
+        response = self.client.post("/api/hostels/create/", self.hostel_data, format="json")
+
+        self.assertEqual(response.status_code, 401)
+        self.assertFalse(Hostel.objects.filter(name="Student Comfort Hostel").exists())
