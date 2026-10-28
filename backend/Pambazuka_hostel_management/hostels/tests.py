@@ -155,7 +155,6 @@ class BookingAPITests(TestCase):
         )
 
         self.assertEqual(response.status_code, 201)
-
         self.hostel.refresh_from_db()
         self.assertEqual(self.hostel.availability, 2)
 
@@ -240,6 +239,66 @@ class OwnerBookingAPITests(TestCase):
         response = self.client.patch(f"/api/hostels/bookings/{booking.id}/manage/", {"status": "Approved"}, format="json")
 
         self.assertEqual(response.status_code, 403)
-
         booking.refresh_from_db()
         self.assertEqual(booking.status, "Pending")
+
+class BookingAvailabilityTests(TestCase):
+    def setUp(self):
+        from .models import Booking
+        from rest_framework.authtoken.models import Token
+
+        self.owner = User.objects.create_user(
+            username="availability_owner",
+            password="StrongTestPassword123!"
+        )
+        self.student = User.objects.create_user(
+            username="availability_student",
+            password="StrongTestPassword123!"
+        )
+
+        self.hostel = Hostel.objects.create(
+            owner=self.owner,
+            name="Availability Test Hostel",
+            location="Eldoret",
+            price=5000,
+            gender="Mixed",
+            rooms="Both",
+            availability=2
+        )
+
+        self.booking = Booking.objects.create(
+            student=self.student,
+            hostel=self.hostel,
+            room_type="Single"
+        )
+
+        token, created = Token.objects.get_or_create(user=self.owner)
+        self.client = APIClient()
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Token {token.key}"
+        )
+
+    def test_rejecting_booking_restores_availability_once(self):
+        response = self.client.patch(
+            f"/api/hostels/bookings/{self.booking.id}/manage/",
+            {"status": "Rejected"},
+            format="json"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.hostel.refresh_from_db()
+        self.assertEqual(self.hostel.availability, 3)
+
+        response = self.client.patch(f"/api/hostels/bookings/{self.booking.id}/manage/", {"status": "Rejected"}, format="json")
+
+        self.assertEqual(response.status_code, 400)
+        self.hostel.refresh_from_db()
+        self.assertEqual(self.hostel.availability, 3)
+
+    def test_approving_booking_does_not_restore_availability(self):
+        response = self.client.patch(f"/api/hostels/bookings/{self.booking.id}/manage/", {"status": "Approved"}, format="json")
+
+        self.assertEqual(response.status_code, 200)
+
+        self.hostel.refresh_from_db()
+        self.assertEqual(self.hostel.availability, 2)
