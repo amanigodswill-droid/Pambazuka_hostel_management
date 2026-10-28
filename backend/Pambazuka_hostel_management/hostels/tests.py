@@ -1,4 +1,3 @@
-
 from django.contrib.auth.models import User
 from django.test import TestCase
 from rest_framework.test import APIClient
@@ -158,6 +157,60 @@ class BookingAPITests(TestCase):
         self.hostel.refresh_from_db()
         self.assertEqual(self.hostel.availability, 2)
 
+    
+    def test_booking_rejects_past_move_in_date(self):
+        response = self.client.post(
+            "/api/hostels/bookings/",
+            {
+                "hostel": self.hostel.id,
+                "full_name": "Test Student",
+                "email": "booking@example.com",
+                "phone": "0712345678",
+                "national_id": "12345678",
+                "gender": "Male",
+                "university": "Test University",
+                "registration_number": "TEST002",
+                "room_type": "Single",
+                "move_in_date": (
+                    date.today() - timedelta(days=1)
+                ).isoformat(),
+                "payment_method": "Bank",
+                "payment_reference": "TEST-REF-002",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.hostel.refresh_from_db()
+        self.assertEqual(self.hostel.availability, 3)
+
+    def test_booking_accepts_future_move_in_date(self):
+        response = self.client.post(
+            "/api/hostels/bookings/",
+            {
+                "hostel": self.hostel.id,
+                "full_name": "Test Student",
+                "email": "booking@example.com",
+                "phone": "0712345678",
+                "national_id": "12345678",
+                "gender": "Male",
+                "university": "Test University",
+                "registration_number": "TEST003",
+                "room_type": "Single",
+                "move_in_date": (
+                    date.today() + timedelta(days=14)
+                ).isoformat(),
+                "payment_method": "Bank",
+                "payment_reference": "TEST-REF-003",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.hostel.refresh_from_db()
+        self.assertEqual(self.hostel.availability, 2)
+
+
     def test_student_can_cancel_pending_booking(self):
         from .models import Booking
 
@@ -168,15 +221,11 @@ class BookingAPITests(TestCase):
             move_in_date=date.today() + timedelta(days=7)
         )
 
-        response = self.client.patch(
-            f"/api/hostels/bookings/{booking.id}/cancel/"
-        )
+        response = self.client.patch(f"/api/hostels/bookings/{booking.id}/cancel/")
 
         self.assertEqual(response.status_code, 200)
-
         booking.refresh_from_db()
         self.hostel.refresh_from_db()
-
         self.assertEqual(booking.status, "Rejected")
         self.assertEqual(self.hostel.availability, 4)
 
