@@ -53,3 +53,45 @@ class RegistrationAPITests(TestCase):
         self.assertTrue(
             User.objects.filter(username="student_test").exists()
         )
+
+class AuthenticationAPITests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create_user(
+            username="profile_student",
+            email="profile@example.com",
+            password="StrongTestPassword123!"
+        )
+
+    def test_user_login(self):
+        response = self.client.post("/api/hostels/login/",
+            {
+                "username": "profile_student",
+                "password": "StrongTestPassword123!"
+            },
+            format="json"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("token", response.data)
+
+    def test_profile_requires_authentication(self):
+        response = self.client.get("/api/hostels/profile/")
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_authenticated_student_can_view_profile(self):
+        from rest_framework.authtoken.models import Token
+
+        token, created = Token.objects.get_or_create(user=self.user)
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Token {token.key}"
+        )
+
+        response = self.client.get("/api/hostels/profile/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["username"],
+            "profile_student"
+        )
