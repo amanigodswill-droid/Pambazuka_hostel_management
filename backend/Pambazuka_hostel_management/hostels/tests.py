@@ -360,9 +360,8 @@ class BookingAPITests(TestCase):
         )
 
         response = self.client.get("/api/hostels/bookings/")
-
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data),1)
         self.assertEqual(response.data[0]["hostel"], self.hostel.id)
         self.assertEqual(response.data[0]["payment_status"], "Pending")
 
