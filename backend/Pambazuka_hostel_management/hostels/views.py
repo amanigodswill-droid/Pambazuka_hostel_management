@@ -125,6 +125,7 @@ def student_bookings(request):
     serializer = BookingSerializer(bookings, many=True)
     return Response(serializer.data)
 
+
 @api_view(['PATCH'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -132,15 +133,24 @@ def cancel_booking(request, pk):
     try:
         booking = Booking.objects.get(pk=pk, student=request.user)
     except Booking.DoesNotExist:
-        return Response({"error": "Booking not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'Booking not found.'}, status=status.HTTP_404_NOT_FOUND)
 
     if booking.status != 'Pending':
-        return Response({"error": "Only pending bookings can be cancelled"}, status=status.HTTP_404_BAD_REQUEST)
-    
+        return Response({'error': 'Only pending bookings can be cancelled.'}, status=status.HTTP_400_BAD_REQUEST)
+
     booking.status = 'Rejected'
-    booking.save()
-    serializer = BookingSerializer(booking)
-    return Response(serializer.data)
+    booking.save(update_fields=['status'])
+
+    hostel = booking.hostel
+    hostel.availability += 1
+    hostel.save(update_fields=['availability'])
+
+    return Response({
+        'message': 'Booking cancelled successfully.',
+        'booking_id': booking.id,
+        'status': booking.status,
+        'hostel_availability': hostel.availability
+    })
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
