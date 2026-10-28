@@ -229,6 +229,80 @@ class BookingAPITests(TestCase):
         self.assertEqual(booking.status, "Rejected")
         self.assertEqual(self.hostel.availability, 4)
 
+    def test_booking_rejects_invalid_payment_method(self):
+        response = self.client.post("/api/hostels/bookings/",
+           {
+            "hostel": self.hostel.id,
+            "full_name": "Test Student",
+            "email": "booking@example.com",
+            "phone": "0712345678",
+            "national_id": "12345678",
+            "gender": "Male",
+            "university": "Test University",
+            "registration_number": "TEST004",
+            "room_type": "Single",
+            "move_in_date": (
+                date.today() + timedelta(days=7)
+            ).isoformat(),
+            "payment_method": "Cash",
+            "payment_reference": "TEST-REF-004",
+            },
+            format="json",
+            )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("error", response.data)
+
+
+    def test_booking_rejects_mpesa_without_phone(self):
+        response = self.client.post("/api/hostels/bookings/",
+          {
+            "hostel": self.hostel.id,
+            "full_name": "Test Student",
+            "email": "booking@example.com",
+            "phone": "0712345678",
+            "national_id": "12345678",
+            "gender": "Male",
+            "university": "Test University",
+            "registration_number": "TEST005",
+            "room_type": "Single",
+            "move_in_date": (
+                date.today() + timedelta(days=7)
+            ).isoformat(),
+            "payment_method": "Mpesa",
+            "mpesa_phone": "",
+            "payment_reference": "TEST-REF-005",
+           },
+           format="json",
+           )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("error", response.data)
+
+
+    def test_booking_payment_stays_pending(self):
+        response = self.client.post("/api/hostels/bookings/",
+           {
+            "hostel": self.hostel.id,
+            "full_name": "Test Student",
+            "email": "booking@example.com",
+            "phone": "0712345678",
+            "national_id": "12345678",
+            "gender": "Male",
+            "university": "Test University",
+            "registration_number": "TEST006",
+            "room_type": "Single",
+            "move_in_date": (
+                date.today() + timedelta(days=7)
+            ).isoformat(),
+            "payment_method": "Bank",
+            "payment_reference": "TEST-REF-006",
+            },
+            format="json",
+            )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data["payment_status"], "Pending")
 
 class OwnerBookingAPITests(TestCase):
     def setUp(self):
