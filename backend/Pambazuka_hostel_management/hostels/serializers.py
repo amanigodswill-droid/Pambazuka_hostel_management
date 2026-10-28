@@ -11,13 +11,13 @@ class HostelSerializer(serializers.ModelSerializer):
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
-        fields =['id', 'hostel', 'full_name','email', 'phone', 'national_id', 'gender', 'university', 'registration_number', 'room_type', 'status', 'date_booked', 'payment_status', 'payment_method', 'mpesa_phone', 'payment_reference']
+        fields =['id', 'hostel', 'full_name','email', 'phone', 'national_id', 'gender', 'university', 'registration_number', 'room_type', 'move_in_date', 'status', 'date_booked', 'payment_status', 'payment_method', 'mpesa_phone', 'payment_reference']
         read_only_fields = ['id', 'status', 'date_booked', 'payment_status']
 
-def validate_move_in_date(self, value):
-    from django.utils import timezone
+    def validate_move_in_date(self, value):
+        from django.utils import timezone
 
-    if value <timezone.localdate():
-        raise serializers.ValidationError("Move-in date cannot be in the past.")
+        if value <timezone.localdate():
+           raise serializers.ValidationError("Move-in date cannot be in the past.")
 
-    return value
+        return value
