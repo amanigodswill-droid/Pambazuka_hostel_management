@@ -32,6 +32,25 @@ class HostelAPITests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["name"], "Sunrise Hostel")
 
+    def test_filter_hostels_by_location(self):
+        response = self.client.get("/api/hostels/?location=Eldoret")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["name"], "Sunrise Hostel")
+
+    def test_filter_hostels_by_gender(self):
+        response = self.client.get("/api/hostels/?gender=Mixed")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["name"], "Sunrise Hostel")
+
+    def test_filter_hostels_by_room_type(self):
+        response = self.client.get("/api/hostels/?rooms=Both")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["name"], "Sunrise Hostel")
 
 class RegistrationAPITests(TestCase):
     def setUp(self):
