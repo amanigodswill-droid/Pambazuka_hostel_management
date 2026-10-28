@@ -271,3 +271,14 @@ def reset_password(request):
     return Response({
         'message': 'Password reset successfully.'
     })
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def owner_bookings(request):
+    bookings = Booking.objects.filter(
+        hostel__owner=request.user
+    ).order_by('-date_booked')
+
+    serializer = BookingSerializer(bookings, many=True)
+    return Response(serializer.data)
