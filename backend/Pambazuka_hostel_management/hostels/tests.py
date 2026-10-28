@@ -304,6 +304,30 @@ class BookingAPITests(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data["payment_status"], "Pending")
 
+    def test_booking_rejects_missing_payment_reference(self):
+        response = self.client.post("/api/hostels/bookings/",
+          {
+            "hostel": self.hostel.id,
+            "full_name": "Test Student",
+            "email": "booking@example.com",
+            "phone": "0712345678",
+            "national_id": "12345678",
+            "gender": "Male",
+            "university": "Test University",
+            "registration_number": "TEST007",
+            "room_type": "Single",
+            "move_in_date": (
+                date.today() + timedelta(days=7)
+            ).isoformat(),
+            "payment_method": "Bank",
+            "payment_reference": "",
+           },
+           format="json",
+           )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("error", response.data)
+
 class OwnerBookingAPITests(TestCase):
     def setUp(self):
         self.client = APIClient()
