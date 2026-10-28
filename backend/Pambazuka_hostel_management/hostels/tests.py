@@ -95,3 +95,88 @@ class AuthenticationAPITests(TestCase):
             response.data["username"],
             "profile_student"
         )
+
+from datetime import date, timedelta
+
+class BookingAPITests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.student = User.objects.create_user(
+            username="booking_student",
+            email="booking@example.com",
+            password="StrongTestPassword123!"
+        )
+
+        self.owner = User.objects.create_user(
+            username="hostel_owner",
+            email="owner@example.com",
+            password="StrongTestPassword123!"
+        )
+
+        self.hostel = Hostel.objects.create(
+            owner=self.owner,
+            name="Booking Test Hostel",
+            location="Eldoret",
+            price=5000,
+            gender="Mixed",
+            rooms="Both",
+            availability=3
+        )
+
+        from rest_framework.authtoken.models import Token
+        token, created = Token.objects.get_or_create(
+            user=self.student
+        )
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Token {token.key}"
+        )
+
+    def test_booking_creation_reduces_availability(self):
+        response = self.client.post(
+            "/api/hostels/bookings/",
+            {
+                "hostel": self.hostel.id,
+                "full_name": "Test Student",
+                "email": "booking@example.com",
+                "phone": "0712345678",
+                "national_id": "12345678",
+                "gender": "Male",
+                "university": "Test University",
+                "registration_number": "TEST001",
+                "room_type": "Single",
+                "move_in_date": (
+                    date.today() + timedelta(days=7)
+                ).isoformat(),
+                "payment_method": "Bank",
+                "payment_reference": "TEST-REF-001"
+            },
+            format="json"
+        )
+
+        self.assertEqual(response.status_code, 201)
+
+        self.hostel.refresh_from_db()
+        self.assertEqual(self.hostel.availability, 2)
+
+    def test_student_can_cancel_pending_booking(self):
+        from .models import Booking
+
+        booking = Booking.objects.create(
+            student=self.student,
+            hostel=self.hostel,
+            room_type="Single",
+            move_in_date=date.today() + timedelta(days=7)
+        )
+
+        response = self.client.patch(
+            f"/api/hostels/bookings/{booking.id}/cancel/"
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        booking.refresh_from_db()
+        self.hostel.refresh_from_db()
+
+        self.assertEqual(booking.status, "Rejected")
+        self.assertEqual(self.hostel.availability, 4)

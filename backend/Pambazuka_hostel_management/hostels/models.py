@@ -54,6 +54,7 @@ class Booking(models.Model):
     university = models.CharField(max_length=150, blank=True)
     registration_number = models.CharField(max_length=50, blank=True)
     room_type = models.CharField(max_length=10, choices=ROOM_TYPE_CHOICES)
+    move_in_date = models.DateField(null=True, blank=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     date_booked = models.DateTimeField(auto_now_add=True)
     payment_status = models.CharField(max_length=10, choices=PAYMENT_STATUS_CHOICES, default='Pending')
