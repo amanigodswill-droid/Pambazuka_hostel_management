@@ -416,3 +416,38 @@ class HostelCreationAPITests(TestCase):
 
         self.assertEqual(response.status_code, 401)
         self.assertFalse(Hostel.objects.filter(name="Student Comfort Hostel").exists())
+
+class PasswordResetAPITests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.user = User.objects.create_user(
+            username="reset_test_user",
+            email="reset@example.com",
+            password="StrongTestPassword123!"
+        )
+
+    def test_password_reset_requires_email(self):
+        response = self.client.post("/api/hostels/password-reset/", {}, format="json")
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_password_reset_rejects_invalid_token(self):
+        from django.contrib.auth.tokens import default_token_generator
+        from django.utils.encoding import force_bytes
+        from django.utils.http import urlsafe_base64_encode
+
+        uid = urlsafe_base64_encode(force_bytes(self.user.pk))
+
+        response = self.client.post("/api/hostels/password-reset/confirm/",
+            {
+            "uid": uid,
+            "token": "invalid-token",
+            "new_password": "AnotherStrongPassword123!"
+            },
+            format="json"
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password("StrongTestPassword123!"))
