@@ -1,3 +1,5 @@
+from django.db import transaction
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
@@ -76,7 +78,8 @@ def student_profile(request):
     user.save()    
     return Response({"user_id": user.id, "username": user.username, "email": user.email})
 
-@api_view(['GET','POST'])
+
+@api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def create_booking(request):
@@ -84,38 +87,47 @@ def create_booking(request):
         bookings = Booking.objects.filter(student=request.user).order_by('-date_booked')
         serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data)
+
     required_fields = ['hostel', 'full_name', 'email', 'phone', 'national_id', 'gender', 'university', 'registration_number', 'room_type', 'move_in_date', 'payment_method', 'payment_reference']
+
     for field in required_fields:
         if not request.data.get(field):
-            return Response({'error': f'{field} is required'}, status=status.HTTP_404_BAD_REQUEST)
+            return Response({'error': f'{field} is required'}, status=status.HTTP_400_BAD_REQUEST)
+
     payment_method = request.data.get('payment_method')
     payment_reference = request.data.get('payment_reference', '').strip()
-    mpesa_phone = request.data.get('mpesa_phone','').strip()
+    mpesa_phone = request.data.get('mpesa_phone', '').strip()
 
-    if payment_method not in['Mpesa', 'Bank']:
-        return Response({'error':'Choose M-pesa or Bank as the payment method.'}, status=status.HTTP_400_BAD_REQUEST)
-    if payment_method =='Mpesa':
-       if not mpesa_phone or not payment_reference:
-          return Response({'error':'M-Pesa phone number and transaction code are required.'}, status=status.HTTP_400_BAD_REQUEST)
-    if payment_method =='Bank' and not payment_reference:
-        return Response({'error':'Bank transaction reference is required.'}, status=status.HTTP_400_BAD_REQUEST)
-     
+    if payment_method not in ['Mpesa', 'Bank']:
+        return Response({'error': 'Choose M-pesa or Bank as the payment method.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if payment_method == 'Mpesa' and not mpesa_phone:
+        return Response({'error': 'M-Pesa phone number is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if not payment_reference:
+        return Response({'error': 'Payment transaction reference is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
     serializer = BookingSerializer(data=request.data)
 
-    if serializer.is_valid():
-      hostel = serializer.validated_data['hostel']
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-      if hostel.availability < 1:
-        return Response({'error': 'Sorry, this hostel has no available rooms.'}, status=status.HTTP_400_BAD_REQUEST)
+    with transaction.atomic():
+        hostel = get_object_or_404(Hostel.objects.select_for_update(), pk=serializer.validated_data['hostel'].pk)
 
-      booking = serializer.save(student=request.user, payment_status='Pending')
+        if hostel.availability < 1:
+            return Response({'error': 'Sorry, this hostel has no available rooms.'}, status=status.HTTP_400_BAD_REQUEST)
 
-      hostel.availability -= 1
-      hostel.save(update_fields=['availability'])
+        booking = serializer.save(
+            student=request.user,
+            hostel=hostel,
+            payment_status='Pending'
+        )
 
-      return Response(BookingSerializer(booking).data, status=status.HTTP_201_CREATED)
+        hostel.availability -= 1
+        hostel.save(update_fields=['availability'])
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(BookingSerializer(booking).data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])  
