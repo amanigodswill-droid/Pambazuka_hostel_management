@@ -152,6 +152,41 @@ def cancel_booking(request, pk):
         'hostel_availability': hostel.availability
     })
 
+@api_view(['PATCH'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def manage_booking(request, pk):
+    try:
+        booking = Booking.objects.get(pk=pk)
+    except Booking.DoesNotExist:
+        return Response({'error': 'Booking not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    if booking.hostel.owner != request.user:
+        return Response({'error': 'You are not allowed to manage this booking.'}, status=status.HTTP_403_FORBIDDEN)
+
+    if booking.status != 'Pending':
+        return Response({'error': 'Only pending bookings can be updated.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    new_status = request.data.get('status')
+
+    if new_status not in ['Approved', 'Rejected']:
+        return Response({'error': 'Status must be Approved or Rejected.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    booking.status = new_status
+    booking.save(update_fields=['status'])
+
+    if new_status == 'Rejected':
+        hostel = booking.hostel
+        hostel.availability += 1
+        hostel.save(update_fields=['availability'])
+
+    return Response({
+        'message': f'Booking {new_status.lower()} successfully.',
+        'booking_id': booking.id,
+        'status': booking.status
+    })
+
+
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
