@@ -302,3 +302,76 @@ class BookingAvailabilityTests(TestCase):
 
         self.hostel.refresh_from_db()
         self.assertEqual(self.hostel.availability, 2)
+
+class HostelOwnershipTests(TestCase):
+    def setUp(self):
+        from rest_framework.authtoken.models import Token
+
+        self.owner = User.objects.create_user(
+            username="hostel_owner",
+            password="StrongTestPassword123!"
+        )
+        self.other_user = User.objects.create_user(
+            username="other_hostel_owner",
+            password="StrongTestPassword123!"
+        )
+
+        self.hostel = Hostel.objects.create(
+            owner=self.owner,
+            name="Ownership Test Hostel",
+            location="Eldoret",
+            price=5000,
+            gender="Mixed",
+            rooms="Both",
+            availability=3
+        )
+
+        token, created = Token.objects.get_or_create(
+            user=self.owner
+        )
+        self.owner_client = APIClient()
+        self.owner_client.credentials(
+            HTTP_AUTHORIZATION=f"Token {token.key}"
+        )
+
+        token, created = Token.objects.get_or_create(
+            user=self.other_user
+        )
+        self.other_client = APIClient()
+        self.other_client.credentials(
+            HTTP_AUTHORIZATION=f"Token {token.key}"
+        )
+
+    def test_owner_can_update_own_hostel(self):
+        response = self.owner_client.patch(
+            f"/api/hostels/{self.hostel.id}/manage/",
+            {"price": "5500.00"},
+            format="json"
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.hostel.refresh_from_db()
+        self.assertEqual(self.hostel.price, 5500)
+
+    def test_other_user_cannot_update_hostel(self):
+        response = self.other_client.patch(
+            f"/api/hostels/{self.hostel.id}/manage/",
+            {"price": "1000.00"},
+            format="json"
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+        self.hostel.refresh_from_db()
+        self.assertEqual(self.hostel.price, 5000)
+
+    def test_other_user_cannot_delete_hostel(self):
+        response = self.other_client.delete(
+            f"/api/hostels/{self.hostel.id}/manage/"
+        )
+
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(Hostel.objects.filter(
+            id=self.hostel.id
+        ).exists())
