@@ -52,6 +52,12 @@ class HostelAPITests(TestCase):
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]["name"], "Sunrise Hostel")
 
+    def test_search_returns_empty_list_when_no_hostel_matches(self):
+        response = self.client.get("/api/hostels/?location=NonexistentTown")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 0)
+
 class RegistrationAPITests(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -382,6 +388,36 @@ class BookingAPITests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 0)
+
+    
+def test_booking_fails_when_no_rooms_are_available(self):
+    self.hostel.availability = 0
+    self.hostel.save()
+
+    response = self.client.post("/api/hostels/bookings/",
+        {
+            "hostel": self.hostel.id,
+            "full_name": "Test Student",
+            "email": "booking@example.com",
+            "phone": "0712345678",
+            "national_id": "12345678",
+            "gender": "Male",
+            "university": "Test University",
+            "registration_number": "TEST008",
+            "room_type": "Single",
+            "move_in_date": (
+                date.today() + timedelta(days=7)
+            ).isoformat(),
+            "payment_method": "Bank",
+            "payment_reference": "TEST-REF-008",
+        },
+        format="json",
+        )
+
+    self.assertEqual(response.status_code, 400)
+    self.hostel.refresh_from_db()
+    self.assertEqual(self.hostel.availability, 0)
+
 
 class OwnerBookingAPITests(TestCase):
     def setUp(self):
