@@ -1,0 +1,57 @@
+.hostel-card{
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 4px 10px rgba(0,0,0,.1);
+    transition:.3s;
+}
+
+.hostel-card:hover{transform:translateY(-5px);}
+
+.hostel-image{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+}
+
+.hostel-info{
+    padding:20px;
+}
+
+.hostel-info h3{
+    color:#1e3a8a;
+    margin-bottom:10px;
+}
+
+.hostel-info p{
+    margin-bottom:10px;
+}
+
+.hostel-info a{
+    display:block;
+    width:100%;
+    text-align:center;
+    text-decoration:none;
+    color:white;
+    background-color:#2563eb;
+    padding:10px;
+    margin-bottom:12px;
+    border-radius:6px;
+}
+
+.favorite-btn {
+    background-color:#f4b400;
+    width:100%;
+    color:white;
+    border:none;
+    padding:10px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:15px;
+    margin-top:12px;
+
+}
+
+.favorite-btn:hover{
+    background-color:#1d4ed8;;
+}

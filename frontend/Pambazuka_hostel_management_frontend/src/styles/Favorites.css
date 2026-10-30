@@ -1,0 +1,37 @@
+.favorites-page {
+    max-width:1200px;
+    margin:40px auto;
+    padding:20px;
+}
+
+.favorites-page h1{
+    text-align:center;
+    margin-bottom:30px;
+    color:#1f2937;
+}
+
+.favorites-page p{
+    text-align:center;
+    font-size:18px;
+    color:#666;
+}
+
+.favorite-item{
+    margin-bottom:30px;
+}
+
+.remove-btn {
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border:none;
+    background:#dc2626;
+    color:white;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.remove-btn:hover {
+    background:#b91c1c;
+}

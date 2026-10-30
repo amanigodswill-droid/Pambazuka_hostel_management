@@ -1,0 +1,35 @@
+.not-found-page{
+    min-height:60vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:40px;
+}
+
+.not-found-page h1{
+    font-size:80px;
+    margin:0;
+}
+
+.not-found-page h2{
+    margin:10px 0;
+
+}
+
+.not-found-page p{
+    margin-bottom:25px;
+}
+
+.home-btn{
+    text-decoration:none;
+    background:#2563eb;
+    color:white;
+    padding:12px 22px;
+    border-radius:6px;
+}
+
+.home-btn:hover{
+    background:#1e3a8a;
+}

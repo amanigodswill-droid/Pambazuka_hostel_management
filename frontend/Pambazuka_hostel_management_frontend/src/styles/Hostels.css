@@ -1,0 +1,66 @@
+.hostels-page{
+    padding:60px 20px;
+}
+
+.hostels-page h1{
+    text-align:center;
+    color:#1e3a8a;
+    margin-bottom:15px;
+}
+
+.hostels-intro{
+    text-align:center;
+    color:#666;
+    max-width:700px;
+    margin:0 auto 40px;
+    line-height:1.7;
+}
+
+.hostels-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:30px;
+}
+
+.search-box{
+    display:block;
+    width:100%;
+    max-width:450px;
+    margin:30px auto;
+    padding:12px;
+    font-size:1rem;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+.filters {
+    display:flex;
+    gap:15px;
+    margin:20px 0;
+    flex-wrap:wrap;
+}
+
+.filters select{
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:15px;
+    min-width:180px;
+}
+
+.search-filter-container{
+    display:flex;
+    gap:15px;
+    margin:20px 0;
+    flex-wrap:wrap;
+    align-items:center;
+}
+
+.filter-select{
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:15px;
+    min-width:170px;
+    background:white;
+}

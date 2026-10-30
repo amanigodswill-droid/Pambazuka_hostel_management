@@ -1,0 +1,118 @@
+.receipt{
+    max-width:800px;
+    margin:50px auto;
+    background: #ffffff;
+    padding:40px;
+    border:1px solid #dcdcdc;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.receipt-header{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.receipt-header h1{
+    font-size:2rem;
+    color:#1e3a8a;
+    margin-bottom:8px;
+}
+
+.receipt-header p{
+    color:#666;
+    font-size:1rem;
+    margin-bottom:15px;
+}
+
+.receipt-header h2{
+    font-size:1.4rem;
+    color:#2563eb;
+    letter-spacing:1px;
+}
+
+.receipt hr{
+    border:none;
+    border-top:1px solid #ddd;
+    margin:25px 0;
+}
+
+.receipt-info{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:15px;
+}
+
+.receipt-info p{
+    margin:0;
+    color:#444;
+}
+
+.receipt-section {
+    margin-bottom:20px;
+}
+
+.receipt-section h3{
+    color:#1e3a8a;
+    margin-bottom:15px;
+    border-bottom:2px solid #2563eb;
+    padding-bottom:6px;
+}
+
+.receipt-section p{
+    margin:10px 0;
+    color:#444;
+    line-height:1.6;
+}
+
+.receipt-footer{
+    text-align:center;
+    margin-top:30px;
+}
+
+.receipt-footer p{
+    margin:8px 0;
+    color:#555;
+}
+
+.download-btn{
+    margin-top:25px;
+    padding:14px 30px;
+    background:#2563eb;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    font-size:1rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.download-btn:hover{
+    background:#1e40af;
+}
+
+@media print{
+    body *{
+        visibility:hidden;
+    }
+    .receipt,
+    .receipt *{
+        visibility:visible;
+    }
+    .receipt{
+        position:absolute;
+        left:0;
+        top:0;
+        width:100%;
+        margin:0;
+        padding:30px;
+        box-shadow:none;
+        border:none;
+
+    }
+    .download-btn{
+        display:none;
+    }
+}
