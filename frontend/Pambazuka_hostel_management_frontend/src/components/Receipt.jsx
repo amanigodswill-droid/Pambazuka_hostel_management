@@ -1,86 +1,81 @@
 import "../styles/Receipt.css";
 
 function Receipt({ bookingData }) {
+    const paymentStatus = bookingData.payment_status || "Pending";
+    const bookingStatus = bookingData.status || "Pending";
 
+    const receiptNumber = bookingData.id
+        ? `PH-${bookingData.id}`
+        : "Pending";
 
-  return (
-  <div className="receipt">
-  <div className="receipt-header">
-      <h1>Pambazuka Hostel Management</h1>
-        <p>Student Accommodation Booking System</p>
-       <h2>OFFICIAL BOOKING RECEIPT</h2>
- </div>
+    const paymentMethod = bookingData.payment_method === "Mpesa"
+        ? "M-Pesa"
+        : bookingData.payment_method;
 
-      <hr />
+    return (
+        <div className="receipt">
+            <div className="receipt-header">
+                <h1>Pambazuka Hostel Management</h1>
+                <p>Student Accommodation Booking System</p>
+                <h2>BOOKING RECEIPT</h2>
+            </div>
 
-      <div className="receipt-info">
-        <p><strong>Receipt Number:</strong> {bookingData.receiptNumber}</p>
-        <p><strong>Booking Date:</strong>{" "}{bookingData.bookingDate}</p>
-        <p><strong>Payment Status:</strong> PAID</p>
-        <p><strong>Amount Paid:</strong>Ksh {bookingData.amountPaid}</p>
-    </div>
+            <hr />
 
-      <hr />
+            <div className="receipt-info">
+                <p><strong>Receipt Number:</strong> {receiptNumber}</p>
+                <p><strong>Booking Date:</strong> {bookingData.date_booked
+                    ? new Date(bookingData.date_booked).toLocaleDateString()
+                    : "Not available"}</p>
+                <p><strong>Booking Status:</strong> {bookingStatus}</p>
+                <p><strong>Payment Status:</strong> {paymentStatus}</p>
+                <p><strong>Hostel Price:</strong> Ksh {bookingData.amount || "Notavailable"}</p>
+            </div>
 
-      <section className="receipt-section">
-        <h3>Student Information</h3>
-        <p><strong>Full Name:</strong> {bookingData.fullName}</p>
-        <p><strong>Email:</strong> {bookingData.email}</p>
-        <p><strong>Phone Number:</strong> {bookingData.phone}</p>
-        <p><strong>National ID:</strong> {bookingData.nationalId}</p>
-        <p><strong>Gender:</strong> {bookingData.gender}</p>
-        <p><strong>University:</strong> {bookingData.university}</p>
-        <p><strong>Registration Number:</strong> {bookingData.registrationNumber}</p>
+            <hr />
 
-    </section>
+            <section className="receipt-section">
+                <h3>Student Information</h3>
+                <p><strong>Full Name:</strong> {bookingData.full_name}</p>
+                <p><strong>Email:</strong> {bookingData.email}</p>
+                <p><strong>Phone Number:</strong> {bookingData.phone}</p>
+                <p><strong>National ID:</strong> {bookingData.national_id}</p>
+                <p><strong>Gender:</strong> {bookingData.gender}</p>
+                <p><strong>University:</strong> {bookingData.university}</p>
+                <p><strong>Registration Number:</strong> {bookingData.registration_number}</p>
+            </section>
 
-      <hr />
+            <hr />
 
-      <section className="receipt-section">
-        <h3>Booking Information</h3>
-        <p><strong>Hostel:</strong> {bookingData.hostel}</p>
-        <p><strong>Room Type:</strong> {bookingData.roomType}</p>
-        <p><strong>Move-in Date:</strong> {bookingData.moveInDate}</p>
-        <p><strong>Special Requests:</strong> {bookingData.specialRequests || "None"}</p>
+            <section className="receipt-section">
+                <h3>Booking Information</h3>
+                <p><strong>Hostel:</strong> {bookingData.hostel_name || bookingData.hostel}</p>
+                <p><strong>Room Type:</strong> {bookingData.room_type}</p>
+                <p><strong>Move-in Date:</strong> {bookingData.move_in_date}</p>
+            </section>
 
-    </section>
+            <hr />
 
-      <hr />
+            <section className="receipt-section">
+                <h3>Payment Information</h3>
+                <p><strong>Payment Method:</strong> {paymentMethod}</p>
+                <p><strong>Payment Reference:</strong> {bookingData.payment_reference || "Not provided"}</p>
+            </section>
 
-      <section className="receipt-section">
-        <h3>Payment Information</h3>
-        <p><strong>Payment Method:</strong> {bookingData.paymentMethod}</p>
-        {bookingData.paymentMethod === "M-Pesa" && (
-          <p><strong>Transaction Code:</strong> {bookingData.mpesaCode}</p>
-        )}
-        {bookingData.paymentMethod === "Bank" && (
-            <p><strong>Bank Reference:</strong> {bookingData.bankReference}</p>
-        )}
+            <hr />
 
-    </section>
+            <div className="receipt-footer">
+                <p>Thank you for choosing Pambazuka.</p>
+                <p>This document confirms that your booking request was received.</p>
+                <p>Payment is subject to verification.</p>
+                <p>Email: hostelhub@gmail.com</p>
+                <p>Phone: +254702260426</p>
+                <p>Please keep this receipt for future reference.</p>
 
-      <hr />
-
-      <div className="receipt-footer">
-        <p>Thank you for choosing Pambazuka.</p>
-        <p>This receipt confirms your hostel booking and payment.</p>
-        <p>For enquiries, contact Pambazuka Support.</p>
-        <p>Email:hostelhub@gmail.com</p>
-        <p>Phone:+254702260426</p>
-        <p>Please keep this receipt for future reference</p>
-         <p><strong>Reference:</strong>{bookingData.receiptNumber}</p>
-
-        <button
-          className="download-btn"
-          onClick={() => window.print()}>
-          Print / Download Receipt
-        </button>
-
-      </div>
-
-    </div>
-
-  );
+                <button className="download-btn" onClick={() => window.print()}>Print / Download Receipt</button>
+            </div>
+        </div>
+    );
 }
 
 export default Receipt;

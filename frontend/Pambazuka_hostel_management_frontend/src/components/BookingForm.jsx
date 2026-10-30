@@ -25,70 +25,117 @@ function BookingForm({selectedHostel,onBookingComplete }) {
         });
 
 function handleChange(e) {
-    const {name,value} = e.target;
+    const {name,value} = e.target;setFormData({...formData,[name]:value,});}
+async function handleSubmit(e) {e.preventDefault();
+    if (!selectedHostel) {
+        toast.error("Please select a hostel before booking.");
+        return;
+    }
 
-    setFormData({...formData,[name]:value,});
+    if (!formData.fullName || !formData.email || !formData.phone ||
+        !formData.nationalId || !formData.gender || !formData.university ||
+        !formData.registrationNumber || !formData.roomType ||
+        !formData.moveInDate || !formData.paymentMethod) {
+        toast.error("Please fill in all required fields.");
+        return;
+    }
+
+    if (formData.paymentMethod === "M-Pesa" &&
+        (!formData.mpesaPhone || !formData.mpesaCode)) {
+        toast.error("Please provide your M-Pesa phone number and transaction code.");
+        return;
+    }
+
+    if (formData.paymentMethod === "Bank" && !formData.bankReference) {
+        toast.error("Please provide your bank transaction reference.");
+        return;
+    }
+
+    if (!formData.email.includes("@")) {
+        toast.error("Please enter a valid email address.");
+        return;
+    }
+
+    if (formData.phone.length < 10) {
+        toast.error("Please enter a valid phone number.");
+        return;
+    }
+
+    if (formData.nationalId.length < 6) {
+        toast.error("Please enter a valid National ID or Passport number.");
+        return;
+    }
+
+    if (formData.registrationNumber.length < 5) {
+        toast.error("Please enter a valid registration number.");
+        return;
+    }
+
+    if (formData.moveInDate < new Date().toISOString().split("T")[0]) {
+        toast.error("Move-in date cannot be in the past.");
+        return;
+    }
+
+    if (formData.paymentMethod === "M-Pesa" && !/^\d{10}$/.test(formData.mpesaPhone)) {
+        toast.error("Please enter a valid 10-digit M-Pesa phone number.");
+        return;
+    }
+    if (formData.paymentMethod === "M-Pesa" &&!/^[A-Z0-9]{6,10}$/.test(formData.mpesaCode)) {
+    toast.error("Please enter a valid M-Pesa transaction code (6-10 alphanumeric characters).");
+    return;
 }
 
-    function handleSubmit(e) {e.preventDefault();
+    const token = localStorage.getItem("authToken");
 
-        if (!selectedHostel) {
-            toast.error("Please select a hostel before booking.");
-            return;
-        }
-        if (formData.paymentMethod === "M-Pesa" && (!formData.mpesaPhone || !formData.mpesaCode)) {
-            toast.error("Please provide M-Pesa phone number and transaction code.");
-            return;
-        }
-        if (formData.paymentMethod === "Bank" && !formData.bankReference) {
-            toast.error("Please provide bank transaction reference.");
-            return;
-        }
-        if (!formData.fullName || !formData.email || !formData.phone || !formData.nationalId || !formData.gender || !formData.university || !formData.registrationNumber || !formData.roomType || !formData.moveInDate || !formData.paymentMethod) {
-            toast.error("Please fill in all required fields.");
-            return;
-        }
-        if (!formData.email.includes("@")) {
-            toast.error("Please enter a valid email address.");
-            return;
-        }
-        if (formData.phone.length < 10) {
-            toast.error("Please enter a valid phone number.");
-            return;
-        }
-        if (formData.nationalId.length < 6) {
-            toast.error("Please enter a valid National ID or Passport number.");
-            return;
-        }
-        if (formData.registrationNumber.length < 5) {
-            toast.error("Please enter a valid registration number.");
-            return;
-        }
-        if (formData.moveInDate < new Date().toISOString().split("T")[0]) {
-            toast.error("Move-in date cannot be in the past.");
-            return;
-        }
-        if (formData.paymentMethod === "M-Pesa" && !/^\d{10}$/.test(formData.mpesaPhone)) {
-            toast.error("Please enter a valid 10-digit M-Pesa phone number.");
-            return;
-        }
-        if (formData.paymentMethod === "M-Pesa" && !/^[A-Z0-9]{6,10}$/.test(formData.mpesaCode)) {
-            toast.error("Please enter a valid M-Pesa transaction code (6-10 alphanumeric characters).");
-            return;
-        }
-        const receiptNumber="HH-" + Date.now();
-        const bookingDetails={...formData,receiptNumber,bookingDate:new Date()
-            .toLocaleDateString(),amountPaid:selectedHostel ?
-            selectedHostel.price:0,
-        };
-        const existingBookings= JSON.parse(localStorage.getItem("hostelBookings"))||[];
-        existingBookings.push(bookingDetails);
-        localStorage.setItem("hostelBookings", JSON.stringify(existingBookings));
-        toast.success("Booking confirmed! A receipt has been generated.");
-       toast.info(`Receipt number: ${receiptNumber}`);
-       onBookingComplete(bookingDetails);
-
+    if (!token) {
+        toast.error("Please log in before making a booking.");
+        return;
     }
+
+    const bookingData = {
+        hostel: selectedHostel.id,
+        full_name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        national_id: formData.nationalId,
+        gender: formData.gender,
+        university: formData.university,
+        registration_number: formData.registrationNumber,
+        room_type: formData.roomType,
+        move_in_date: formData.moveInDate,
+        payment_method: formData.paymentMethod === "M-Pesa" ? "Mpesa" : "Bank",
+        mpesa_phone: formData.paymentMethod === "M-Pesa" ? formData.mpesaPhone : "",
+        payment_reference: formData.paymentMethod === "M-Pesa"? formData.mpesaCode: formData.bankReference
+    };
+
+    try {
+        const response = await fetch(
+            "http://127.0.0.1:8000/api/hostels/bookings/",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Token ${token}`
+                },
+                body: JSON.stringify(bookingData)
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            const errorMessage = Object.values(data).flat().join(" ");
+            toast.error(errorMessage || "Booking failed.");
+            return;
+        }
+
+        toast.success("Your booking request has been submitted!");
+        onBookingComplete(data);
+
+    } catch {
+        toast.error("Unable to connect to the server.");
+    }
+}
 
 return (
     <form className="booking-form" onSubmit={handleSubmit}>
@@ -163,12 +210,6 @@ return (
             <label>Move-in Date</label>
             <input type="date" name="moveInDate" value={formData.moveInDate}
             onChange={handleChange} required/>
-        </div>
-        <div className="form-group">
-            <label>Special Requests(Optional)</label>
-            <textarea name="specialRequests" value={formData.specialRequests}
-            onChange={handleChange} placeholder="Any additional information..."
-            rows="4"/>
         </div>
         <hr/>
         <h2>Payment Details</h2>
