@@ -12,7 +12,7 @@ function Contact() {
     const {name,value} = e.target;setFormData({...formData,[name]:value,});
   }
   function handleSubmit(e) {e.preventDefault();
-    alert("Thank you for contacting HostelHub. We will get back to you very soon");
+    alert("Thank you for contacting Pambazuka Hostel Management. We will get back to you very soon");
     setFormData({
      name:"",
      email:"",
@@ -23,7 +23,7 @@ function Contact() {
   return (
     <main className="contact-page">
       <section className="contact-header">
-      <h1>Contact HostelHub Ltd</h1>
+      <h1>Contact Pambazuka</h1>
       <p><strong>We'd love to hear from you!</strong> Whether you need help finding a hostel orhave
         questions about our services, our support team is here to assist you.
       </p>
@@ -31,7 +31,7 @@ function Contact() {
       <section className="contact-content">
         <div className="contact-info">
           <h2>Get In Touch</h2>
-          <p>You can contact HostelHub Eldoret using the information below.</p>
+          <p>You can contact Pambazuka using the information below.</p>
 
         <div className="contact-detail">
           <h3>Location</h3>

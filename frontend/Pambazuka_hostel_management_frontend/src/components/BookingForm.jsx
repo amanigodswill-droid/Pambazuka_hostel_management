@@ -201,7 +201,7 @@ return (
          {formData.paymentMethod ==="Bank" &&(
             <>
             <div className="bank-details">
-                <h3>HostelHub Bank Details</h3>
+                <h3>Bank Details</h3>
                 <p><strong>Bank:</strong>Equity Bank</p>
                 <p><strong>Account Name:</strong>HostelHub Limited</p>
                 <p><strong>Account Number:</strong>3425637890</p>
@@ -218,7 +218,7 @@ return (
         )}
         <div className="form-group checkbox-group">
             <label><input type="checkbox" required/>{""}I confirm that the information above is correct
-            and I agree to HostelHub's booking terms.</label>
+            and I agree to Pambazuka's booking terms.</label>
         </div>
        <button type="submit" className="confirm-btn">Confirm Booking</button>
 

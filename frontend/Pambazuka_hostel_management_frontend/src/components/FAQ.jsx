@@ -5,7 +5,7 @@ function FAQ() {
     const[openQuestion,setOpenQuestion] = useState(null);
     const questions=[{
         question:"How do I find a hostel?",
-        answer:"Go to the Hostels page and browse the available hostels.You can also use the serach and filter options to find a hostel that matches your preferences.",
+        answer:"Go to the Hostels page and browse the available hostels.You can also use the search and filter options to find a hostel that matches your preferences.",
         },
         {
            question:"Can I save a hostel for later?",
@@ -17,11 +17,11 @@ function FAQ() {
         },
         {
             question:"What payment methods are available?",
-            answer:"HostelHub currently only supports M-pesa and Bank payment options.",
+            answer:"Pambazuka currently only supports M-pesa and Bank payment options.",
         },
         {
             question:"Will I receive a booking receipt?",
-            answer:"Yes.After completing your booking,HostelHub generates a booking receipt containing your booking and payment information.",
+            answer:"Yes.After completing your booking, Pambazuka generates a booking receipt containing your booking and payment information.",
         },
         {
             question:"Can I print my receipt?",
@@ -29,7 +29,7 @@ function FAQ() {
         },
         {
             question:"Where are the hostels located?",
-            answer:"The hostels listed on HostelHub are located in different areas around Eldoret,located in different areas around Eldoret,including areas near Moi University and the University of Eldoret.",
+            answer:"The hostels listed on Pambazuka are located in different areas around Eldoret,located in different areas around Eldoret,including areas near Moi University and the University of Eldoret.",
         },
     ];
 
@@ -41,7 +41,7 @@ return (
     <main className="faq-page">
         <section className="faq-header">
             <h1>Frequently Asked Questions</h1>
-            <p>Find answers to some of the common questions about using HostelHub Eldoret.</p>
+            <p>Find answers to some of the common questions about using Pambazuka Hostel Management.</p>
             </section>
             <section className="faq-list">
             {questions.map((item,index) =>(

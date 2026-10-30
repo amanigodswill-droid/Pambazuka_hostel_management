@@ -5,8 +5,8 @@ function About() {
   return (
     <main className="about-page">
       <section className="about-hero">
-      <h1>About HostelHub Ltd</h1>
-      <p>HostelHub Ltd is a company committed to helping university students secure
+      <h1>About Pambazuka Hostel Management</h1>
+      <p>Pambazuka is a company committed to helping university students secure
         safe,affordable and reliable accomodation.Through our digital platform,
         students can explore verified hostel listings and make informed decisions before arriving on campus.
       </p>
@@ -15,7 +15,7 @@ function About() {
         <div className="about-card">
           <FaUser className="icon"/>
           <h2>Who We Are</h2>
-          <p>HostelHub is a student accomodation platform designed to simplify the process of finding hostels
+          <p>Pambazuka is a student accomodation platform designed to simplify the process of finding hostels
             in Eldoret.We connect students with reliable accommodation options while making the booking process
              easier and faster.
           </p>
@@ -37,7 +37,7 @@ function About() {
           </div>
         </section>
         <section className="why-hostelHub">
-          <h2>Why Choose HostelHub?</h2>
+          <h2>Why Choose Pambazuka?</h2>
           <div className="about-features">
             <div>
               <FaCheckCircle className="icon"/>

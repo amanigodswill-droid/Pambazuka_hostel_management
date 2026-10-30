@@ -6,7 +6,7 @@ function Receipt({ bookingData }) {
   return (
   <div className="receipt">
   <div className="receipt-header">
-      <h1>HostelHub</h1>
+      <h1>Pambazuka Hostel Management</h1>
         <p>Student Accommodation Booking System</p>
        <h2>OFFICIAL BOOKING RECEIPT</h2>
  </div>
@@ -62,9 +62,9 @@ function Receipt({ bookingData }) {
       <hr />
 
       <div className="receipt-footer">
-        <p>Thank you for choosing HostelHub.</p>
+        <p>Thank you for choosing Pambazuka.</p>
         <p>This receipt confirms your hostel booking and payment.</p>
-        <p>For enquiries, contact HostelHub Support.</p>
+        <p>For enquiries, contact Pambazuka Support.</p>
         <p>Email:hostelhub@gmail.com</p>
         <p>Phone:+254702260426</p>
         <p>Please keep this receipt for future reference</p>

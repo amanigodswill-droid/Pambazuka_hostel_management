@@ -5,11 +5,11 @@ function Hero() {
     return (
         <section className="hero">
             <div className="hero-content">
-                <h1>Welcome to HostelHub Eldoret</h1>
+                <h1>Welcome to Pambazuka Hostel Management</h1>
 
-                <p>HostelHub Eldoret helps university students discover verified,
+                <p>Pambazuka Hostel Management helps university students discover verified,
                     affordable and comfortable hostels near major universities in Elodret.
-                    Compare prices,explore amanities and book your preferred hostei with confidence </p>
+                    Compare prices,explore amanities and book your preferred hostel with confidence </p>
                     <div className="hero-buttons">
                         <Link to="/hostels" className="primary-btn">Browse Hostels</Link>
                         <Link to="/about"  className="secondary-btn">Learn more</Link>

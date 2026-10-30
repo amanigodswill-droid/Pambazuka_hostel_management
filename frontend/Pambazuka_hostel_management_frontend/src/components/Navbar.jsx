@@ -19,7 +19,7 @@ function handleLogout() {
     <nav className="navbar">
 
         <div className="logo">
-        <h2>HostelHub</h2>
+        <h2>Pambazuka</h2>
         <p>Find Your Perfect Student Home</p>
         </div>
 
