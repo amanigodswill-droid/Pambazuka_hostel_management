@@ -37,6 +37,7 @@ function Navbar() {
                 {isLoggedIn ? (
                     <div className="user-section">
                         <span className="welcome-user">Welcome, {currentUser.username}</span>
+                        <NavLink to="/profile" className="login-btn">My Profile</NavLink>
                         <button className="logout-btn" onClick={handleLogout}>Logout</button>
                     </div>
                 ) : (

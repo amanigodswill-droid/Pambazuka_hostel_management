@@ -17,6 +17,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ForgotPassword from "./pages/ForgotPassword";
 import VerifyOTP from "./pages/VerifyOTP";
 import ResetPassword from "./pages/ResetPassword";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
       <Route path='/forgot-password' element={<ForgotPassword/>} />
       <Route path='/verify-otp' element={<VerifyOTP/>} />
       <Route path='/reset-password' element={<ResetPassword/>} />
+      <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>}/>
     </Routes>
     <Footer />
     <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false}
