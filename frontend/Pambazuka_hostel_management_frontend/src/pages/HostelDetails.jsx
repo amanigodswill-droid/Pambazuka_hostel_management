@@ -4,15 +4,17 @@ import hostels from "../data/hostels";
 import "../styles/HostelDetails.css";
 
 function HostelDetails() {
-  const {id} = useParams();
+  const { id } = useParams();
 
   const hostel = hostels.find((item) => item.id === Number(id));
+
+  const [selectedImage, setSelectedImage] = useState(
+    hostel ? hostel.image.cover : ""
+  );
 
   if (!hostel) {
     return <h2>Hostel not found.</h2>;
   }
-  const [selectedImage, setSelectedImage] = useState(hostel.image.cover);
-
 
   return (
 

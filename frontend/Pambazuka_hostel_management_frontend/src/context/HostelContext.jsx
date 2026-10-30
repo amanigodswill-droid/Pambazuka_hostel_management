@@ -1,10 +1,11 @@
-import { createContext } from "react";
+import { HostelContext } from "./HostelContext";
 import hostels from "../data/hostels";
 
-export const HostelContext = createContext();
-function HostelProvider({ children}) {
+function HostelProvider({ children }) {
     return (
-        <HostelContext.Provider value={{hostels}}>{children}</HostelContext.Provider>
+        <HostelContext.Provider value={{ hostels }}>
+            {children}
+        </HostelContext.Provider>
     );
 }
 
