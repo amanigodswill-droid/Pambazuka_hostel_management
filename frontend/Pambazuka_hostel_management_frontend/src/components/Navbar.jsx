@@ -5,8 +5,10 @@ import { toast } from "react-toastify";
 function Navbar() {
     const navigate = useNavigate();
 
-const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+const savedUser = localStorage.getItem("currentUser");
+const currentUser = savedUser && savedUser !== "undefined"? JSON.parse(savedUser): null;
 const isLoggedIn =localStorage.getItem("isLoggedIn") === "true";
+
 function handleLogout() {
   localStorage.removeItem("currentUser");
   localStorage.removeItem("isLoggedIn");
@@ -34,7 +36,7 @@ function handleLogout() {
             {isLoggedIn? (
                 <div className="user-section">
                     <span className="welcome-user">
-                        Welcome,{currentUser.fullName.split("")[0]}
+                        Welcome,{currentUser?.fullName?.split(" ")[0]}
                     </span>
                     <button className="logout-btn" onClick={handleLogout}>
                         Logout

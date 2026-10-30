@@ -1,96 +1,100 @@
-import{useState} from "react";
+import { useContext, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import hostels from "../data/hostels";
+import { HostelContext } from "../context/HostelContext";
+import { hostelImages } from "../data/hostels";
 import "../styles/HostelDetails.css";
 
 function HostelDetails() {
-  const { id } = useParams();
+    const { id } = useParams();
+    const { hostels, loading, error } = useContext(HostelContext);
+    const hostel = hostels.find((item) => item.id === Number(id));
+    const [selectedImage, setSelectedImage] = useState("");
 
-  const hostel = hostels.find((item) => item.id === Number(id));
+    if (loading) {
+        return <h2>Loading hostel details...</h2>;
+    }
 
-  const [selectedImage, setSelectedImage] = useState(
-    hostel ? hostel.image.cover : ""
-  );
+    if (error) {
+        return <h2>{error}</h2>;
+    }
 
-  if (!hostel) {
-    return <h2>Hostel not found.</h2>;
-  }
+    if (!hostel) {
+        return <h2>Hostel not found.</h2>;
+    }
 
-  return (
+    const images = hostelImages[hostel.id] || {};
+    const coverImage = hostel.cover_image || images.cover || "";
+    const galleryImages = [
+        { image: coverImage, label: "Cover" },
+        { image: images.exteriorWithParking, label: "Exterior" },
+        { image: images.bathrooms, label: "Bathroom" },
+        { image: images.kitchenSpace, label: "Kitchen" },
+        { image: images.laundryArea, label: "Laundry" },
+    ].filter((item) => item.image);
 
-    <main className="details-page">
-      <img src={selectedImage} alt={hostel.name} className="details-image" />
+    return (
+        <main className="details-page">
+            {coverImage ? (
+                <img src={selectedImage || coverImage} alt={hostel.name} className="details-image"/>
+            ) : (
+                <div className="details-image">No cover image available.</div>
+            )}
 
-<div className="image-gallery">
+            <div className="image-gallery">
+                {galleryImages.map((item, index) => (
+                    <div className="gallery-item" key={index} onClick={() => setSelectedImage(item.image)}>
+                        <img src={item.image} alt={item.label} />
+                        <span>{item.label}</span>
+                    </div>
+                ))}
+            </div>
 
-  <div
-    className="gallery-item"
-    onClick={() => setSelectedImage(hostel.image.cover)}
-  >
-    <img src={hostel.image.cover} alt="Cover" />
-    <span>Cover</span>
-  </div>
+            <div className="details-content">
+                <h1>{hostel.name}</h1>
 
-  <div
-    className="gallery-item"
-    onClick={() => setSelectedImage(hostel.image.exteriorWithParking)}
-  >
-    <img src={hostel.image.exteriorWithParking} alt="Exterior" />
-    <span>Exterior</span>
-  </div>
+                <div className="details-grid">
+                    <div className="detail-card">
+                        <h4>Location</h4>
+                        <p>{hostel.location}</p>
 
-  <div
-    className="gallery-item"
-    onClick={() => setSelectedImage(hostel.image.bathrooms)}
-  >
-    <img src={hostel.image.bathrooms} alt="Bathroom" />
-    <span>Bathroom</span>
-  </div>
+                        <h4>Monthly Rent</h4>
+                        <p>Ksh {hostel.price}</p>
 
-  <div
-    className="gallery-item"
-    onClick={() => setSelectedImage(hostel.image.kitchenSpace)}
-  >
-    <img src={hostel.image.kitchenSpace} alt="Kitchen" />
-    <span>Kitchen</span>
-  </div>
+                        <h4>Gender</h4>
+                        <p>{hostel.gender}</p>
 
-  <div
-    className="gallery-item"
-    onClick={() => setSelectedImage(hostel.image.laundryArea)}
-  >
-    <img src={hostel.image.laundryArea} alt="Laundry" />
-    <span>Laundry</span>
-  </div>
+                        <h4>Rooms</h4>
+                        <p>
+                            {hostel.rooms === "Both"
+                                ? "Single and Shared"
+                                : hostel.rooms}
+                        </p>
 
-</div>
-      <div className="details-content">
-        <h1>{hostel.name}</h1>
-        <div className="details-grid">
-          <div className="detail-card">
-            <h4>Location</h4><p>{hostel.location}</p>
-            <h4>Monthly Rent</h4><p>Ksh {hostel.price}</p>
-            <h4>Gender</h4><p>{hostel.gender}</p>
-            <h4>Rooms</h4><p>{hostel.rooms}</p>
-            <h4>Availability</h4><p>{hostel.availability} Rooms Available</p>
-            <h4>Distance</h4><p>{hostel.distance}</p>
-          </div>
-        </div>
-        <h3>Descriptions</h3>
-        <p>{hostel.description}</p>
-        <h3>Amenities</h3>
-        <ul>
-          {hostel.amenities.map((item,index) =>(
-            <li key={index}>{item}</li>
-          ))}
-        </ul>
-      <div className="button-group">
-        <Link to="/booking" state={{hostel}} className="book-btn">Book Now</Link>
-        <Link to="/hostels" className="back-btn">Back to Hostels</Link>
-      </div>
-      </div>
-    </main>
-  );
+                        <h4>Availability</h4>
+                        <p>{hostel.availability} Rooms Available</p>
+
+                        <h4>Distance</h4>
+                        <p>{hostel.distance}</p>
+                    </div>
+                </div>
+
+                <h3>Description</h3>
+                <p>{hostel.description}</p>
+
+                <h3>Amenities</h3>
+                <ul>
+                    {hostel.amenities.map((item, index) => (
+                        <li key={index}>{item}</li>
+                    ))}
+                </ul>
+
+                <div className="button-group">
+                    <Link to="/booking" state={{ hostel }} className="book-btn">Book Now</Link>
+                    <Link to="/hostels" className="back-btn">Back to Hostels</Link>
+                </div>
+            </div>
+        </main>
+    );
 }
 
 export default HostelDetails;

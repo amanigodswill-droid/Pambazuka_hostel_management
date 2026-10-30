@@ -225,4 +225,57 @@ const hostels= [
 
 ];
 
+
+export const hostelImages = {
+    1: {
+        cover: greenViewCover,
+        exteriorWithParking: greenViewExteriorWithParking,
+        bathrooms: greenViewBathrooms,
+        kitchenSpace: greenViewKitchenSpace,
+        laundryArea: greenViewLaundryArea,
+    },
+    3: {
+        cover: unityResidenceCover,
+        exteriorWithParking: unityResidenceExteriorWithParking,
+        bathrooms: unityResidenceBathrooms,
+        kitchenSpace: unityResidenceKitchenSpace,
+        laundryArea: unityResidenceLaundryArea,
+    },
+    4: {
+        cover: sunriseHostelCover,
+        exteriorWithParking: sunriseHostelsExteriorWithParking,
+        bathrooms: sunriseHostelsBathrooms,
+        kitchenSpace: sunriseHostelsKitchen,
+        laundryArea: sunriseHostelLaundryArea,
+    },
+    5: {
+        cover: eliteStudentHomesCover,
+        exteriorWithParking: eliteStudentHomesExteriorWithParking,
+        bathrooms: eliteStudentHomesBathrooms,
+        kitchenSpace: eliteStudentHomesKitchenSpace,
+        laundryArea: eliteStudentHomesLaundryArea,
+    },
+    6: {
+        cover: campusEdgeCover,
+        exteriorWithParking: campusEdgeExteriorWithParking,
+        bathrooms: campusEdgeBathrooms,
+        kitchenSpace: campusEdgeKitchenSpace,
+        laundryArea: campusEdgeLaundryArea,
+    },
+    7: {
+        cover: royalGardensCover,
+        exteriorWithParking: royalGardensExteriorWithParking,
+        bathrooms: royalGardensBathrooms,
+        kitchenSpace: royalGardensKitchenSpace,
+        laundryArea: royalGardensLaundryArea,
+    },
+    8: {
+        cover: hillsideResidenceCover,
+        exteriorWithParking: hillsideResidenceExteriorWithParking,
+        bathrooms: hillsideResidenceBathrooms,
+        kitchenSpace: hillsideResidenceKitchenSpace,
+        laundryArea: hillsideResidenceLaundryArea,
+    },
+};
+
 export default hostels;
