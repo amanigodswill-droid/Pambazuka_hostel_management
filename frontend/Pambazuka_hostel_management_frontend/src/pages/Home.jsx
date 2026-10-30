@@ -8,9 +8,9 @@ function Home() {
       <Hero/>
       <Stats/>
           <section className="why-us">
-        <h2>Why choose HostelHub?</h2>
+        <h2>Why choose Pamabazuka Hostels?</h2>
         <p>We understand the challenges students face when searching for suitable accomodation.
-            HostelHub Eldoret is designed to simplify the process by providing a curated list of
+            Pambazuka is designed to simplify the process by providing a curated list of
             verified hostels, ensuring students can find safe and affordable options with ease.
         </p>
         <div className="features">
