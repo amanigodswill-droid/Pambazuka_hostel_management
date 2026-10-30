@@ -1,41 +1,46 @@
-import {useState} from "react";
-import { useNavigate} from "react-router-dom";
-import {toast} from "react-toastify";
+import { useState } from "react";
+import { toast } from "react-toastify";
 import "../styles/Auth.css";
 
 function ForgotPassword() {
-    const [email,setEmail] =useState("")
-    const navigate = useNavigate();
+    const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    function handleSubmit(e) {e.preventDefault();
+    async function handleSubmit(e) {e.preventDefault();setLoading(true);
 
-        const users =JSON.parse(localStorage.getItem("hostelHubUsers"))|| [];
-        const user =users.find((user) =>user.email ===email);
+        try {
+            const response = await fetch(
+                "http://127.0.0.1:8000/api/hostels/password-reset/",
+                {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({ email })
+                }
+            );
 
-        if (!user) {
-            toast.error("No account found with this email.");
-            return;
+            const data = await response.json();
+
+            if (!response.ok) {throw new Error(data.error || "Password reset request failed.");}
+            toast.success(data.message);
+            setEmail("");
+        } catch (error) {
+            toast.error(error.message);
+        } finally {
+            setLoading(false);
         }
-
-        const otp =Math. floor(100000 + Math.random()* 900000). toString();
-        localStorage.setItem("generatedOTP",otp);
-        localStorage.setItem("otpEmail",email);
-
-        toast.success(`Demo OTP:${otp}`);
-
-        navigate("/verify-otp");
     }
 
     return (
         <main className="auth-page">
             <div className="auth-card">
                 <h1>Forgot Password</h1>
-                <p>Enter your email address nto receive a verification code.</p>
+                <p>Enter your email address to receive a password reset link.</p>
+
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label>Email Address</label>
-                        <input type="email" value={email} onChange={(e) =>setEmail(e.target.value)}required/>
-                        <button className="auth-btn">Send OTP</button>
+                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
+                        <button className="auth-btn" disabled={loading}> {loading ? "Sending..." : "Send Reset Link"}</button>
                     </div>
                 </form>
             </div>

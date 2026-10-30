@@ -241,7 +241,7 @@ def request_password_reset(request):
     for user in users:
       uid = urlsafe_base64_encode(force_bytes(user.pk))
       token = default_token_generator.make_token(user)
-      reset_link = (f"http://localhost:5173/#/reset-password/" f"?uid={uid}&token={token}")
+      reset_link = f"http://localhost:5173/#/reset-password?uid={uid}&token={token}"
 
       send_mail('Pambazuka Hostel Management Password Reset',f'Use this link to reset your password: {reset_link}', settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=False,)
 
