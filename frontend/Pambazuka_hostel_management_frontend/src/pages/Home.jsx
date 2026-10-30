@@ -8,7 +8,7 @@ function Home() {
       <Hero/>
       <Stats/>
           <section className="why-us">
-        <h2>Why choose Pamabazuka Hostels?</h2>
+        <h2>Why choose Pambazuka Hostels?</h2>
         <p>We understand the challenges students face when searching for suitable accomodation.
             Pambazuka is designed to simplify the process by providing a curated list of
             verified hostels, ensuring students can find safe and affordable options with ease.
