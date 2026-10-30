@@ -42,7 +42,7 @@ function Login() {
             toast.success(`Welcome back, ${data.username}!`);
 
             setTimeout(() => {navigate("/booking");}, 1500);} 
-            catch (error) {
+            catch {
             toast.error("Unable to connect to the server.");
         }
     }

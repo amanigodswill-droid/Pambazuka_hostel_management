@@ -47,7 +47,7 @@ function Register() {
 
             toast.success("Account created successfully!");
             setTimeout(() => {navigate("/login");}, 1500);
-            } catch (error) {toast.error("Unable to connect to the server.");}
+            } catch {toast.error("Unable to connect to the server.");}
     }
 
     return (
