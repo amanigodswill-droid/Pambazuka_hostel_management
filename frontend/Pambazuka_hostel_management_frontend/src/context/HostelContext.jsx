@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { HostelContext } from "./HostelContext";
+import API_BASE_URL from "../api";
 
 function HostelProvider({ children }) {
     const [hostels, setHostels] = useState([]);
@@ -7,7 +8,7 @@ function HostelProvider({ children }) {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/hostels/")
+        fetch(`${API_BASE_URL}/api/hostels/`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Failed to fetch hostels.");

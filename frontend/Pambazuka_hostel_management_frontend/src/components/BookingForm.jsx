@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/Booking.css";
 import {toast} from "react-toastify";
+import API_BASE_URL from "../api";
 
 function BookingForm({selectedHostel,onBookingComplete }) {
     const [formData, setFormData] =
@@ -110,7 +111,7 @@ async function handleSubmit(e) {e.preventDefault();
 
     try {
         const response = await fetch(
-            "http://127.0.0.1:8000/api/hostels/bookings/",
+            `${API_BASE_URL}/api/hostels/bookings/`,
             {
                 method: "POST",
                 headers: {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "../styles/Profile.css";
+import API_BASE_URL from "../api";
 
 function Profile() {
     const [profile, setProfile] = useState({
@@ -18,7 +19,7 @@ function Profile() {
 
             try {
                 const response = await fetch(
-                    "http://127.0.0.1:8000/api/hostels/profile/",
+                    `${API_BASE_URL}/api/hostels/profile/`,
                     {
                         headers: {
                             "Authorization": `Token ${token}`
@@ -51,7 +52,7 @@ function Profile() {
 
         try {
             const response = await fetch(
-                "http://127.0.0.1:8000/api/hostels/profile/",
+                `${API_BASE_URL}/api/hostels/profile/`,
                 {
                     method: "PATCH",
                     headers: {"Content-Type": "application/json", "Authorization": `Token ${localStorage.getItem("authToken")}`},

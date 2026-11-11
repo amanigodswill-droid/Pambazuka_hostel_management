@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import PasswordInput from "../components/PasswordInput";
 import "../styles/Auth.css";
+import API_BASE_URL from "../api";
 
 function ResetPassword() {
     const navigate = useNavigate();
@@ -35,7 +36,7 @@ function ResetPassword() {
 
         try {
             const response = await fetch(
-                "http://127.0.0.1:8000/api/hostels/password-reset/confirm/",
+                `${API_BASE_URL}/api/hostels/password-reset/confirm/`,
                 {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},

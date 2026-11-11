@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "../styles/Auth.css";
+import API_BASE_URL from "../api";
 
 function ForgotPassword() {
     const [email, setEmail] = useState("");
@@ -10,7 +11,7 @@ function ForgotPassword() {
 
         try {
             const response = await fetch(
-                "http://127.0.0.1:8000/api/hostels/password-reset/",
+                `${API_BASE_URL}/api/hostels/password-reset/`,
                 {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},

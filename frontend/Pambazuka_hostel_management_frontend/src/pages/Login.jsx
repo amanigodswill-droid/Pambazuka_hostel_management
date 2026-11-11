@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "../styles/Auth.css";
 import { toast } from "react-toastify";
 import PasswordInput from "../components/PasswordInput";
+import API_BASE_URL from "../api";
 
 function Login() {
     const navigate = useNavigate();
@@ -17,7 +18,7 @@ function Login() {
 
         try {
             const response = await fetch(
-                "http://127.0.0.1:8000/api/hostels/login/",
+                `${API_BASE_URL}/api/hostels/login/`,
                 {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
