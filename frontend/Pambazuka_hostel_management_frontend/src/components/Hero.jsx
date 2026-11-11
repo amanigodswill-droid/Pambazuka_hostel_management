@@ -8,7 +8,7 @@ function Hero() {
                 <h1>Welcome to Pambazuka Hostel Management</h1>
 
                 <p>Pambazuka Hostel Management helps university students discover verified,
-                    affordable and comfortable hostels near major universities in Elodret.
+                    affordable and comfortable hostels near major universities in Eldoret.
                     Compare prices,explore amanities and book your preferred hostel with confidence </p>
                     <div className="hero-buttons">
                         <Link to="/hostels" className="primary-btn">Browse Hostels</Link>
