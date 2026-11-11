@@ -51,16 +51,32 @@ def register_user(request):
         return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['POST'])
 def login_user(request):
-    username = request.data.get('username')
+    username_or_email = request.data.get('username')
     password = request.data.get('password')
-    user = authenticate(username=username, password=password)
+    user = authenticate(username=username_or_email, password=password)
+
+    if user is None:
+        try:
+            account = User.objects.get(email__iexact=username_or_email)
+            user = authenticate(username=account.username, password=password)
+        except User.DoesNotExist:
+            user = None
+
     if user:
         token, created = Token.objects.get_or_create(user=user)
-        return Response({"message":"Login Successful", "token": token.key, "user_id":user.id, "username":user.username})
-    else:
-        return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        return Response({
+            "message": "Login Successful",
+            "token": token.key,
+            "user_id": user.id,
+            "username": user.username
+        })
+
+    return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 @api_view(['GET', 'PATCH'])
 @authentication_classes([TokenAuthentication])

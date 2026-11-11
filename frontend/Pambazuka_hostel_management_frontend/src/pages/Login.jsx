@@ -7,14 +7,15 @@ import API_BASE_URL from "../api";
 
 function Login() {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-    });
+    const [formData, setFormData] = useState({email: "", password: "",});
 
     function handleChange(e) {
-        const { name, value } = e.target; setFormData({...formData, [name]: value});}
-    async function handleSubmit(e) {e.preventDefault();
+        const { name, value } = e.target;
+        setFormData({...formData, [name]: value});
+    }
+
+    async function handleSubmit(e) {
+        e.preventDefault();
 
         try {
             const response = await fetch(
@@ -22,11 +23,13 @@ function Login() {
                 {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({username: formData.email, password: formData.password})
+                    body: JSON.stringify({username: formData.email.trim(), password: formData.password})
                 }
             );
 
             const data = await response.json();
+
+            console.log("Login response status:", response.status);
 
             if (!response.ok) {
                 toast.error(data.error || "Invalid email or password.");
@@ -34,16 +37,13 @@ function Login() {
             }
 
             localStorage.setItem("authToken", data.token);
-            localStorage.setItem("currentUser", JSON.stringify({
-                id: data.user_id,
-                username: data.username,
-                email: data.username
-            }));
+            localStorage.setItem("currentUser", JSON.stringify({id: data.user_id, username: data.username, email: formData.email.trim()}));
             localStorage.setItem("isLoggedIn", "true");
-            toast.success(`Welcome back, ${data.username}!`);
 
-            setTimeout(() => {navigate("/booking");}, 1500);} 
-            catch {
+            toast.success(`Welcome back, ${data.username}!`);
+            setTimeout(() => {navigate("/booking");}, 1500);
+
+        } catch {
             toast.error("Unable to connect to the server.");
         }
     }
@@ -84,7 +84,8 @@ function Login() {
                     <button type="submit" className="primary-btn">Login</button>
                 </form>
 
-                <p>Don't have an account?{" "} <Link to="/register">Register here</Link></p>
+                <p>Don't have an account?{" "}<Link to="/register">Register here</Link></p>
+
             </div>
         </main>
     );
