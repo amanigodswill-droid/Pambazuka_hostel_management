@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import "../styles/HostelCard.css";
 import { toast } from "react-toastify";
+import { hostelImages } from "../data/hostels";
 
 function HostelCard({ hostel }) {
     function addToFavorites() {
@@ -18,11 +19,11 @@ function HostelCard({ hostel }) {
         toast.success("Hostel added to favorites");
     }
 
+    const hostelImage = hostel.cover_image || hostelImages[hostel.id]?.cover;
+
     return (
         <div className="hostel-card">
-            {hostel.cover_image && (
-                <img src={hostel.cover_image} alt={hostel.name} className="hostel-image"/>
-            )}
+            {hostelImage && ( <img src={hostelImage} alt={hostel.name} className="hostel-image"/>)}
 
             <div className="hostel-info">
                 <h3>{hostel.name}</h3>
