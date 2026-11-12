@@ -246,6 +246,49 @@ def manage_booking(request, pk):
         'status': booking.status
     })
 
+
+@api_view(['PATCH'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def manage_payment(request, pk):
+    with transaction.atomic():
+        try:
+            booking = Booking.objects.select_for_update().get(pk=pk)
+        except Booking.DoesNotExist:
+            return Response(
+                {'error': 'Booking not found.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        if booking.hostel.owner != request.user:
+            return Response(
+                {'error': 'You are not allowed to manage this payment.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        if booking.payment_status != 'Pending':
+            return Response(
+                {'error': 'This payment has already been processed.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        new_status = request.data.get('payment_status')
+
+        if new_status not in ['Paid', 'Failed']:
+            return Response(
+                {'error': 'Payment status must be Paid or Failed.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        booking.payment_status = new_status
+        booking.save(update_fields=['payment_status'])
+
+    return Response({
+        'message': f'Payment marked as {new_status.lower()}.',
+        'booking_id': booking.id,
+        'payment_status': booking.payment_status
+    })
+
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])

@@ -1,3 +1,4 @@
+
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import API_BASE_URL from "../api";
@@ -29,7 +30,6 @@ function OwnerDashboard() {
             }
 
             setBookings(data);
-
         } catch {
             toast.error("Unable to connect to the server.");
         } finally {
@@ -49,9 +49,7 @@ function OwnerDashboard() {
                         "Content-Type": "application/json",
                         Authorization: `Token ${token}`
                     },
-                    body: JSON.stringify({
-                        status: newStatus
-                    })
+                    body: JSON.stringify({ status: newStatus })
                 }
             );
 
@@ -64,7 +62,40 @@ function OwnerDashboard() {
 
             toast.success(data.message);
             await getBookings();
+        } catch {
+            toast.error("Unable to connect to the server.");
+        } finally {
+            setUpdatingId(null);
+        }
+    }
 
+    async function updatePayment(bookingId, newStatus) {
+        setUpdatingId(bookingId);
+
+        try {
+            const response = await fetch(
+                `${API_BASE_URL}/api/hostels/bookings/${bookingId}/payment/`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Token ${token}`
+                    },
+                    body: JSON.stringify({
+                        payment_status: newStatus
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                toast.error(data.error || "Unable to update payment.");
+                return;
+            }
+
+            toast.success(data.message);
+            await getBookings();
         } catch {
             toast.error("Unable to connect to the server.");
         } finally {
@@ -77,15 +108,15 @@ function OwnerDashboard() {
     }, [getBookings]);
 
     const pendingBookings = bookings.filter(
-        (booking) => booking.status === "Pending"
+        booking => booking.status === "Pending"
     ).length;
 
     const approvedBookings = bookings.filter(
-        (booking) => booking.status === "Approved"
+        booking => booking.status === "Approved"
     ).length;
 
     const rejectedBookings = bookings.filter(
-        (booking) => booking.status === "Rejected"
+        booking => booking.status === "Rejected"
     ).length;
 
     if (loading) {
@@ -100,7 +131,6 @@ function OwnerDashboard() {
 
     return (
         <main className="owner-dashboard">
-
             <div className="dashboard-header">
                 <div>
                     <p className="dashboard-label">HOSTEL MANAGEMENT</p>
@@ -110,7 +140,6 @@ function OwnerDashboard() {
             </div>
 
             <section className="dashboard-stats">
-
                 <div className="stat-card">
                     <p>Total Bookings</p>
                     <h2>{bookings.length}</h2>
@@ -134,11 +163,9 @@ function OwnerDashboard() {
                     <h2>{rejectedBookings}</h2>
                     <span>Rejected requests</span>
                 </div>
-
             </section>
 
             <section className="booking-section">
-
                 <div className="section-heading">
                     <div>
                         <h2>Booking Requests</h2>
@@ -160,10 +187,8 @@ function OwnerDashboard() {
                     </div>
                 ) : (
                     <div className="booking-list">
-
-                        {bookings.map((booking) => (
+                        {bookings.map(booking => (
                             <article className="booking-card" key={booking.id}>
-
                                 <div className="booking-card-header">
                                     <div>
                                         <p className="hostel-label">HOSTEL</p>
@@ -176,7 +201,6 @@ function OwnerDashboard() {
                                 </div>
 
                                 <div className="booking-details">
-
                                     <div>
                                         <span>Student Name</span>
                                         <strong>{booking.full_name}</strong>
@@ -213,46 +237,68 @@ function OwnerDashboard() {
                                     </div>
 
                                     <div>
+                                        <span>Payment Method</span>
+                                        <strong>{booking.payment_method}</strong>
+                                    </div>
+
+                                    {booking.payment_method === "Mpesa" && (
+                                        <div>
+                                            <span>M-Pesa Phone</span>
+                                            <strong>{booking.mpesa_phone}</strong>
+                                        </div>
+                                    )}
+
+                                    <div>
+                                        <span>Transaction Reference</span>
+                                        <strong>{booking.payment_reference}</strong>
+                                    </div>
+
+                                    <div>
                                         <span>Payment Status</span>
                                         <strong>{booking.payment_status}</strong>
                                     </div>
-
                                 </div>
 
                                 {booking.status === "Pending" && (
                                     <div className="booking-actions">
-
                                         <button
                                             className="approve-btn"
                                             onClick={() => updateBooking(booking.id, "Approved")}
                                             disabled={updatingId !== null}
-                                        >
-                                            {updatingId === booking.id
-                                                ? "Updating..."
-                                                : "Approve Booking"}
-                                        </button>
+                                        >Approve Booking</button>
 
                                         <button
                                             className="reject-btn"
                                             onClick={() => updateBooking(booking.id, "Rejected")}
                                             disabled={updatingId !== null}
-                                        >
-                                            {updatingId === booking.id
-                                                ? "Updating..."
-                                                : "Reject Booking"}
-                                        </button>
-
+                                        >Reject Booking</button>
                                     </div>
                                 )}
 
+                                {booking.payment_status === "Pending" && (
+                                    <div className="booking-actions payment-actions">
+                                        <button
+                                            className="approve-btn"
+                                            onClick={() => updatePayment(booking.id, "Paid")}
+                                            disabled={updatingId !== null}
+                                        >
+                                            Mark Payment as Paid
+                                        </button>
+
+                                        <button
+                                            className="reject-btn"
+                                            onClick={() => updatePayment(booking.id, "Failed")}
+                                            disabled={updatingId !== null}
+                                        >
+                                            Mark Payment as Failed
+                                        </button>
+                                    </div>
+                                )}
                             </article>
                         ))}
-
                     </div>
                 )}
-
             </section>
-
         </main>
     );
 }
