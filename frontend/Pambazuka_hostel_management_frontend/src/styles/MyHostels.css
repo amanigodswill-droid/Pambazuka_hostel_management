@@ -1,0 +1,164 @@
+
+.my-hostels-page {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.my-hostels-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.my-hostels-header h1 {
+    color: #183b35;
+    margin-bottom: 8px;
+}
+
+.my-hostels-header p {
+    color: #666;
+}
+
+.my-hostels-header button,
+.form-actions button,
+.hostel-actions button {
+    background: #176b50;
+    color: white;
+    border: none;
+    padding: 11px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.my-hostels-header button:hover,
+.form-actions button:hover,
+.hostel-actions button:hover {
+    background: #104c39;
+}
+
+.hostel-form {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 35px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.hostel-form h2 {
+    color: #183b35;
+    margin-bottom: 15px;
+}
+
+.hostel-form label {
+    font-weight: 600;
+    color: #333;
+}
+
+.hostel-form input,
+.hostel-form select,
+.hostel-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+.hostel-form input:focus,
+.hostel-form select:focus,
+.hostel-form textarea:focus {
+    outline: none;
+    border-color: #176b50;
+}
+
+.hostel-form small {
+    color: #777;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.form-actions button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.form-actions .cancel-btn {
+    background: #777;
+}
+
+.my-hostels-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+}
+
+.my-hostel-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid #eee;
+}
+
+.hostel-card-image {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+}
+
+.hostel-card-content {
+    padding: 20px;
+}
+
+.hostel-card-content h2 {
+    color: #183b35;
+    margin-bottom: 15px;
+}
+
+.hostel-card-content p {
+    color: #555;
+    margin: 9px 0;
+}
+
+.hostel-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.hostel-actions .delete-btn {
+    background: #c0392b;
+}
+
+.hostel-actions .delete-btn:hover {
+    background: #922b21;
+}
+
+.empty-message,
+.loading-message {
+    text-align: center;
+    color: #666;
+    margin: 40px 0;
+}
+
+@media (max-width: 600px) {
+    .my-hostels-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .my-hostels-page {
+        padding: 15px;
+    }
+}

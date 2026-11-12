@@ -48,7 +48,10 @@ function Navbar() {
                         <span className="welcome-user">Welcome, {currentUser.username}</span>
 
                         {isOwner && (
+                            <>
                             <NavLink to="/owner-dashboard" className="login-btn">Owner Dashboard</NavLink>
+                            <NavLink to="/my-hostels" className="login-btn">My Hostels</NavLink>
+                            </>
                         )}
 
                         <NavLink to="/profile" className="login-btn">My Profile</NavLink>

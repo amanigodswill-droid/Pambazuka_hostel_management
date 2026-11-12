@@ -1,8 +1,9 @@
 from django.urls import path
-from .views import hostel_list, hostel_detail, register_user, login_user, student_profile, create_booking, cancel_booking, manage_booking, create_hostel, manage_hostel, request_password_reset, reset_password, owner_bookings
+from .views import hostel_list, my_hostels, hostel_detail, register_user, login_user, student_profile, create_booking, cancel_booking, manage_booking, create_hostel, manage_hostel, request_password_reset, reset_password, owner_bookings
 
 urlpatterns = [
     path("", hostel_list, name='hostel-list'),
+    path("my-hostels/", my_hostels, name="my-hostels"),
     path("<int:pk>/", hostel_detail, name='hostel-detail'),
     path("register/", register_user, name='register-user'),
     path("login/", login_user, name='login-user'),

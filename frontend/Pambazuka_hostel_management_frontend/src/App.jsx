@@ -18,6 +18,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import OwnerDashboard from "./pages/OwnerDashboard";
+import MyHostels from "./pages/MyHostels";
 
 function App() {
   return (
@@ -38,7 +39,7 @@ function App() {
       <Route path='/reset-password' element={<ResetPassword/>} />
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>}/>
       <Route path="/owner-dashboard" element={<ProtectedRoute><OwnerDashboard /></ProtectedRoute>}/>
-      
+      <Route path="/my-hostels" element={<ProtectedRoute><MyHostels /></ProtectedRoute>} />
     </Routes>
     <Footer />
     <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false}

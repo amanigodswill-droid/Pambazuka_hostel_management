@@ -34,6 +34,14 @@ def hostel_list(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def my_hostels(request):
+    hostels = Hostel.objects.filter(owner=request.user)
+    serializer = HostelSerializer(hostels, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
 def hostel_detail(request, pk):
     try:
         hostel = Hostel.objects.get(pk=pk)
