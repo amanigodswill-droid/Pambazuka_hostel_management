@@ -39,8 +39,8 @@ function App() {
       <Route path='/forgot-password' element={<ForgotPassword/>} />
       <Route path='/reset-password' element={<ResetPassword/>} />
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>}/>
-      <Route path="/owner-dashboard" element={<ProtectedRoute><OwnerDashboard /></ProtectedRoute>}/>
-      <Route path="/my-hostels" element={<ProtectedRoute><MyHostels /></ProtectedRoute>} />
+      <Route path="/owner-dashboard" element={<ProtectedRoute ownerOnly={true}><OwnerDashboard /></ProtectedRoute>}/>
+      <Route path="/my-hostels" element={<ProtectedRoute ownerOnly={true}><MyHostels /></ProtectedRoute>} />
       <Route path="/my-bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
     </Routes>
     <Footer />
