@@ -29,15 +29,13 @@ function Login() {
 
             const data = await response.json();
 
-            console.log("Login response status:", response.status);
-
             if (!response.ok) {
                 toast.error(data.error || "Invalid email or password.");
                 return;
             }
 
             localStorage.setItem("authToken", data.token);
-            localStorage.setItem("currentUser", JSON.stringify({id: data.user_id, username: data.username, email: formData.email.trim()}));
+            localStorage.setItem("currentUser", JSON.stringify({id: data.user_id, username: data.username, email: formData.email.trim(), is_owner: data.is_owner}));
             localStorage.setItem("isLoggedIn", "true");
 
             toast.success(`Welcome back, ${data.username}!`);

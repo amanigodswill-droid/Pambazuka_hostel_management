@@ -72,7 +72,8 @@ def login_user(request):
             "message": "Login Successful",
             "token": token.key,
             "user_id": user.id,
-            "username": user.username
+            "username": user.username,
+            "is_owner": Hostel.objects.filter(owner=user).exists()
         })
 
     return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)

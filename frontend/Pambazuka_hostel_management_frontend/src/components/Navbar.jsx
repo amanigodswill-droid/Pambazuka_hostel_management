@@ -4,9 +4,18 @@ import { toast } from "react-toastify";
 
 function Navbar() {
     const navigate = useNavigate();
+
     const savedUser = localStorage.getItem("currentUser");
-    const currentUser = savedUser && savedUser !== "undefined"? JSON.parse(savedUser): null;
-    const isLoggedIn =localStorage.getItem("isLoggedIn") === "true" && currentUser !== null &&localStorage.getItem("authToken") !== null;
+    const currentUser = savedUser && savedUser !== "undefined"
+        ? JSON.parse(savedUser)
+        : null;
+
+    const isLoggedIn =
+        localStorage.getItem("isLoggedIn") === "true" &&
+        currentUser !== null &&
+        localStorage.getItem("authToken") !== null;
+
+    const isOwner = currentUser?.is_owner === true;
 
     function handleLogout() {
         localStorage.removeItem("currentUser");
@@ -37,6 +46,11 @@ function Navbar() {
                 {isLoggedIn ? (
                     <div className="user-section">
                         <span className="welcome-user">Welcome, {currentUser.username}</span>
+
+                        {isOwner && (
+                            <NavLink to="/owner-dashboard" className="login-btn">Owner Dashboard</NavLink>
+                        )}
+
                         <NavLink to="/profile" className="login-btn">My Profile</NavLink>
                         <button className="logout-btn" onClick={handleLogout}>Logout</button>
                     </div>
