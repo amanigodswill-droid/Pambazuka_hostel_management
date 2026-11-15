@@ -68,14 +68,14 @@
     padding:12px 20px;
     border:none;
     border-radius:6px;
-    background:#2563eb;
+    background:#174541;
     color:white;
     cursor:pointer;
     font-size:15px;
 }
 
 .contact-btn:hover{
-    background:#1e3a8a;
+    background:#174541;
 }
 
 @media (max-width:768px) {

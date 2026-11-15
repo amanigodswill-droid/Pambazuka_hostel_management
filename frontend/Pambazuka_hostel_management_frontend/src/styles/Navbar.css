@@ -19,7 +19,7 @@
 }
 
 .logo h2 {
-    color: #1e3a8a;
+    color: #174541;
     font-size: 1.2rem;
     margin: 0;
 }
@@ -51,8 +51,8 @@
 
 .nav-links a:hover,
 .nav-links a.active {
-    color: #2563eb;
-    background: #eff4ff;
+    color: #174541;
+    background: #f0f4ed;
 }
 
 .nav-actions,
@@ -73,22 +73,22 @@
 }
 
 .login-btn {
-    color: #2563eb;
-    border: 1px solid #2563eb;
+    color: #174541;
+    border: 1px solid #174541;
 }
 
 .register-btn {
     color: #fff;
-    background: #2563eb;
-    border: 1px solid #2563eb;
+    background: #174541;
+    border: 1px solid #174541;
 }
 
 .login-btn:hover {
-    background: #eff4ff;
+    background: #f0f4ed;
 }
 
 .register-btn:hover {
-    background: #1d4ed8;
+    background: #10332f;
 }
 
 .welcome-user {

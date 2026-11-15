@@ -10,7 +10,7 @@
 }
 
 .booking-header h1{
-    color:#1e3a8a;
+    color:#174541;
     margin-bottom:15px;
 }
 
@@ -30,7 +30,7 @@
 }
 
 .booking-form h2 {
-    color:#1e3a8a;
+    color:#174541;
     margin-bottom:20px;
     text-align:center;
     margin-top:35px;
@@ -68,7 +68,7 @@
 
 .form-group input:focus,
 .form-group select:focus{
-    border-color:#2563eb;
+    border-color:#174541;
     box-shadow:0 0 5px rgba(37,99,235,.25);
     outline:none;
 }
@@ -92,7 +92,7 @@ hr{
 }
 
 .form-group textarea:focus{
-    border-color:#2563eb;
+    border-color:#174541;
     box-shadow:0 0 5px rgba(37,99,235,.25);
     outline:none;
 
@@ -100,7 +100,7 @@ hr{
 
 .bank-details{
     background:#f9fafb;
-    border-left:5px solid #2563eb;
+    border-left:5px solid #174541;
     padding:20px;
     margin-bottom:20px;
     border-radius:10px;
@@ -108,7 +108,7 @@ hr{
 }
 
 .bank-details h3{
-    color: #1e3a8a;
+    color: #174541;
     margin-bottom:10px;
 }
 
@@ -141,7 +141,7 @@ hr{
     width:100%;
     margin-top:30px;
     padding:18px;
-    background:#2563eb;
+    background:#174541;
     color:white;
     border:none;
     border-radius:10px;
@@ -153,7 +153,7 @@ hr{
 }
 
 .confirm-btn:hover{
-    background:#1d4ed8;
+    background:#10332f;
     transform:translateY(-2px);
 }
 
@@ -163,7 +163,7 @@ hr{
 
 .selected-hostel{
     background:#f9fafb;
-    border-left:5px solid #2563eb;
+    border-left:5px solid #174541;
     padding:25px;
     margin-bottom:25px;
     border-radius:10px;
@@ -171,7 +171,7 @@ hr{
 }
 
 .selected-hostel h3{
-    color:#1e3a8a;
+    color:#174541;
     margin-bottom:12px;
 }
 

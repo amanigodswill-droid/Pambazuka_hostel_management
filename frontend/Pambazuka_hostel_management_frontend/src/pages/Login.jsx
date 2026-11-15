@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "../styles/Auth.css";
 import { toast } from "react-toastify";
 import PasswordInput from "../components/PasswordInput";
@@ -8,6 +8,8 @@ import API_BASE_URL from "../api";
 function Login() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({email: "", password: "",});
+    const location = useLocation();
+    const redirectTo = location.state?.from?.pathname || "/hostels";
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -39,7 +41,7 @@ function Login() {
             localStorage.setItem("isLoggedIn", "true");
 
             toast.success(`Welcome back, ${data.username}!`);
-            setTimeout(() => {navigate("/booking");}, 1500);
+            setTimeout(() => {navigate(redirectTo);}, 1500);
 
         } catch {
             toast.error("Unable to connect to the server.");

@@ -1,11 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap');
 *{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body{
-  font-family: 'Poppins', Arial, Helvetica, sans-serif;
-  background-color: #f5f7fa;
-  color: #374151;
+body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: #f8f9f5;
+    color: #263c3a;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Manrope', sans-serif;
 }

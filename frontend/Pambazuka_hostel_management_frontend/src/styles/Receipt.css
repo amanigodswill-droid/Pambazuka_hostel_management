@@ -15,7 +15,7 @@
 
 .receipt-header h1{
     font-size:2rem;
-    color:#1e3a8a;
+    color:#174541;
     margin-bottom:8px;
 }
 
@@ -27,7 +27,7 @@
 
 .receipt-header h2{
     font-size:1.4rem;
-    color:#2563eb;
+    color:#174541;
     letter-spacing:1px;
 }
 
@@ -54,9 +54,9 @@
 }
 
 .receipt-section h3{
-    color:#1e3a8a;
+    color:#174541;
     margin-bottom:15px;
-    border-bottom:2px solid #2563eb;
+    border-bottom:2px solid #174541;
     padding-bottom:6px;
 }
 
@@ -79,7 +79,7 @@
 .download-btn{
     margin-top:25px;
     padding:14px 30px;
-    background:#2563eb;
+    background:#174541;
     color:#fff;
     border:none;
     border-radius:8px;

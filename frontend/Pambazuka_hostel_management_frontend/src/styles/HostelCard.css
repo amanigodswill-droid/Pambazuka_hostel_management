@@ -19,7 +19,7 @@
 }
 
 .hostel-info h3{
-    color:#1e3a8a;
+    color:#174541;
     margin-bottom:10px;
 }
 
@@ -33,7 +33,7 @@
     text-align:center;
     text-decoration:none;
     color:white;
-    background-color:#2563eb;
+    background-color:#174541;
     padding:10px;
     margin-bottom:12px;
     border-radius:6px;
@@ -53,5 +53,5 @@
 }
 
 .favorite-btn:hover{
-    background-color:#1d4ed8;;
+    background-color:#10332f;;
 }

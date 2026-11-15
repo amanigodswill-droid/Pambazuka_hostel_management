@@ -24,12 +24,12 @@
 
 .home-btn{
     text-decoration:none;
-    background:#2563eb;
+    background:#174541;
     color:white;
     padding:12px 22px;
     border-radius:6px;
 }
 
 .home-btn:hover{
-    background:#1e3a8a;
+    background:#174541;
 }

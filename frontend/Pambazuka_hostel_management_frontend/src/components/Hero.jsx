@@ -1,23 +1,29 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../styles/Hero.css";
+import heroImage from "../assets/Kenyan-hostel.png";
 
 function Hero() {
     return (
         <section className="hero">
             <div className="hero-content">
-                <h1>Welcome to Pambazuka Hostel Management</h1>
+                <span className="hero-label">YOUR COMFORT, OUR PRIORITY</span>
 
-                <p>Pambazuka Hostel Management helps university students discover verified,
-                    affordable and comfortable hostels near major universities in Eldoret.
-                    Compare prices,explore amanities and book your preferred hostel with confidence </p>
-                    <div className="hero-buttons">
-                        <Link to="/hostels" className="primary-btn">Browse Hostels</Link>
-                        <Link to="/about"  className="secondary-btn">Learn more</Link>
+                <h1>Find a place you'll love to call home.</h1>
+                <p>Discover affordable and comfortable student hostels around Eldoret. Compare prices, explore amenities and find accommodation that suits your needs.</p>
+                <div className="hero-buttons">
+                    <Link to="/hostels" className="primary-btn">
+                        Browse Hostels
+                    </Link>
 
-                    </div>
-
+                    <Link to="/about" className="secondary-btn">
+                        Learn More
+                    </Link>
+                </div>
             </div>
 
+            <div className="hero-image">
+                <img src={heroImage} alt="Student hostel accommodation" />
+            </div>
         </section>
     );
 }
