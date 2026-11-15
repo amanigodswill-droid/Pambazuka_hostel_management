@@ -1,57 +1,79 @@
-.hostel-card{
-    background:white;
-    border-radius:10px;
-    overflow:hidden;
-    box-shadow:0 4px 10px rgba(0,0,0,.1);
-    transition:.3s;
+.hostel-card {
+    background: white;
+    border: 1px solid #e5eae4;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.hostel-card:hover{transform:translateY(-5px);}
-
-.hostel-image{
-    width:100%;
-    height:220px;
-    object-fit:cover;
+.hostel-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
-.hostel-info{
-    padding:20px;
+.hostel-image {
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+    display: block;
 }
 
-.hostel-info h3{
-    color:#174541;
-    margin-bottom:10px;
+.hostel-info {
+    padding: 18px;
 }
 
-.hostel-info p{
-    margin-bottom:10px;
+.hostel-info h3 {
+    color: #174541;
+    margin-bottom: 12px;
+    font-size: 1.15rem;
 }
 
-.hostel-info a{
-    display:block;
-    width:100%;
-    text-align:center;
-    text-decoration:none;
-    color:white;
-    background-color:#174541;
-    padding:10px;
-    margin-bottom:12px;
-    border-radius:6px;
+.hostel-info p {
+    color: #68756e;
+    margin-bottom: 10px;
+    line-height: 1.5;
+    font-size: 0.94rem;
+}
+
+.hostel-info a {
+    display: block;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    background: #174541;
+    padding: 11px;
+    margin-top: 15px;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+}
+
+.hostel-info a:hover {
+    background: #10332f;
 }
 
 .favorite-btn {
-    background-color:#f4b400;
-    width:100%;
-    color:white;
-    border:none;
-    padding:10px;
-    border-radius:6px;
-    cursor:pointer;
-    font-size:15px;
-    margin-top:12px;
-
+    background: #b4774d;
+    width: 100%;
+    color: white;
+    border: none;
+    padding: 11px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.94rem;
+    margin-top: 10px;
 }
 
-.favorite-btn:hover{
-    background-color:#10332f;;
+.favorite-btn:hover {
+    background: #95603d;
+}
+
+@media (max-width: 480px) {
+    .hostel-image {
+        height: 190px;
+    }
+
+    .hostel-info {
+        padding: 15px;
+    }
 }
