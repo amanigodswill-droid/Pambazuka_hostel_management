@@ -81,6 +81,7 @@ def login_user(request):
             "token": token.key,
             "user_id": user.id,
             "username": user.username,
+            "first_name": user.first_name,
             "is_owner": Hostel.objects.filter(owner=user).exists()
         })
 

@@ -45,7 +45,7 @@ function Navbar() {
 
                 {isLoggedIn ? (
                     <div className="user-section">
-                        <span className="welcome-user">Welcome, {currentUser.username}</span>
+                        <span className="welcome-user">Welcome, {currentUser.first_name || currentUser.username}</span>
 
                         {isOwner ? (
                             <>

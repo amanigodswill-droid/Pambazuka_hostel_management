@@ -37,10 +37,10 @@ function Login() {
             }
 
             localStorage.setItem("authToken", data.token);
-            localStorage.setItem("currentUser", JSON.stringify({id: data.user_id, username: data.username, email: formData.email.trim(), is_owner: data.is_owner}));
+            localStorage.setItem("currentUser", JSON.stringify({id: data.user_id, username: data.username, first_name: data.first_name, email: formData.email.trim(), is_owner: data.is_owner}));
             localStorage.setItem("isLoggedIn", "true");
 
-            toast.success(`Welcome back, ${data.username}!`);
+            toast.success(`Welcome back, ${data.first_name}!`);
             setTimeout(() => {navigate(redirectTo);}, 1500);
 
         } catch {
