@@ -1,272 +1,390 @@
 import { useState } from "react";
 import "../styles/Booking.css";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 import API_BASE_URL from "../api";
 
-function BookingForm({selectedHostel,onBookingComplete }) {
-    const [formData, setFormData] =
-    useState({
-        fullName:"",
-        email:"",
-        phone:"",
-        nationalId:"",
-        gender:"",
-        university:"",
-        registrationNumber:"",
+function BookingForm({ selectedHostel, onBookingComplete }) {
+    const [formData, setFormData] = useState({
+        fullName: "",
+        email: "",
+        phone: "",
+        nationalId: "",
+        gender: "",
+        university: "",
+        registrationNumber: "",
+        hostel: selectedHostel ? selectedHostel.name : "",
+        roomType: "",
+        moveInDate: "",
+        specialRequests: "",
+        paymentMethod: "",
+        mpesaPhone: "",
+        mpesaCode: "",
+        bankReference: "",
+    });
 
-        hostel:selectedHostel ?selectedHostel.name:"",
-        roomType:"",
-        moveInDate:"",
-        specialRequests:"",
+    function handleChange(e) {
+        const { name, value } = e.target;
 
-        paymentMethod:"",
-        mpesaPhone:"",
-        mpesaCode:"",
-        bankReference:"",
+        setFormData({
+            ...formData,
+            [name]: value,
         });
-
-function handleChange(e) {
-    const {name,value} = e.target;setFormData({...formData,[name]:value,});}
-async function handleSubmit(e) {e.preventDefault();
-    if (!selectedHostel) {
-        toast.error("Please select a hostel before booking.");
-        return;
     }
 
-    if (!formData.fullName || !formData.email || !formData.phone ||
-        !formData.nationalId || !formData.gender || !formData.university ||
-        !formData.registrationNumber || !formData.roomType ||
-        !formData.moveInDate || !formData.paymentMethod) {
-        toast.error("Please fill in all required fields.");
-        return;
-    }
+    async function handleSubmit(e) {
+        e.preventDefault();
 
-    if (formData.paymentMethod === "M-Pesa" &&
-        (!formData.mpesaPhone || !formData.mpesaCode)) {
-        toast.error("Please provide your M-Pesa phone number and transaction code.");
-        return;
-    }
-
-    if (formData.paymentMethod === "Bank" && !formData.bankReference) {
-        toast.error("Please provide your bank transaction reference.");
-        return;
-    }
-
-    if (!formData.email.includes("@")) {
-        toast.error("Please enter a valid email address.");
-        return;
-    }
-
-    if (formData.phone.length < 10) {
-        toast.error("Please enter a valid phone number.");
-        return;
-    }
-
-    if (formData.nationalId.length < 6) {
-        toast.error("Please enter a valid National ID or Passport number.");
-        return;
-    }
-
-    if (formData.registrationNumber.length < 5) {
-        toast.error("Please enter a valid registration number.");
-        return;
-    }
-
-    if (formData.moveInDate < new Date().toISOString().split("T")[0]) {
-        toast.error("Move-in date cannot be in the past.");
-        return;
-    }
-
-    if (formData.paymentMethod === "M-Pesa" && !/^\d{10}$/.test(formData.mpesaPhone)) {
-        toast.error("Please enter a valid 10-digit M-Pesa phone number.");
-        return;
-    }
-    if (formData.paymentMethod === "M-Pesa" &&!/^[A-Z0-9]{6,10}$/.test(formData.mpesaCode)) {
-    toast.error("Please enter a valid M-Pesa transaction code (6-10 alphanumeric characters).");
-    return;
-}
-
-    const token = localStorage.getItem("authToken");
-
-    if (!token) {
-        toast.error("Please log in before making a booking.");
-        return;
-    }
-
-    const bookingData = {
-        hostel: selectedHostel.id,
-        full_name: formData.fullName,
-        email: formData.email,
-        phone: formData.phone,
-        national_id: formData.nationalId,
-        gender: formData.gender,
-        university: formData.university,
-        registration_number: formData.registrationNumber,
-        room_type: formData.roomType,
-        move_in_date: formData.moveInDate,
-        payment_method: formData.paymentMethod === "M-Pesa" ? "Mpesa" : "Bank",
-        mpesa_phone: formData.paymentMethod === "M-Pesa" ? formData.mpesaPhone : "",
-        payment_reference: formData.paymentMethod === "M-Pesa"? formData.mpesaCode: formData.bankReference
-    };
-
-    try {
-        const response = await fetch(
-            `${API_BASE_URL}/api/hostels/bookings/`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Token ${token}`
-                },
-                body: JSON.stringify(bookingData)
-            }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            const errorMessage = Object.values(data).flat().join(" ");
-            toast.error(errorMessage || "Booking failed.");
+        if (!selectedHostel) {
+            toast.error("Please select a hostel before booking.");
             return;
         }
 
-        toast.success("Your booking request has been submitted!");
-        onBookingComplete(data);
+        if (
+            !formData.fullName ||
+            !formData.email ||
+            !formData.phone ||
+            !formData.nationalId ||
+            !formData.gender ||
+            !formData.university ||
+            !formData.registrationNumber ||
+            !formData.roomType ||
+            !formData.moveInDate ||
+            !formData.paymentMethod
+        ) {
+            toast.error("Please fill in all required fields.");
+            return;
+        }
 
-    } catch {
-        toast.error("Unable to connect to the server.");
+        if (
+            formData.paymentMethod === "M-Pesa" &&
+            (!formData.mpesaPhone || !formData.mpesaCode)
+        ) {
+            toast.error("Please provide your M-Pesa payment details.");
+            return;
+        }
+
+        if (formData.paymentMethod === "Bank" && !formData.bankReference) {
+            toast.error("Please provide your bank transaction reference.");
+            return;
+        }
+
+        if (!formData.email.includes("@")) {
+            toast.error("Please enter a valid email address.");
+            return;
+        }
+
+        if (formData.phone.length < 10) {
+            toast.error("Please enter a valid phone number.");
+            return;
+        }
+
+        if (formData.nationalId.length < 6) {
+            toast.error("Please enter a valid National ID or Passport number.");
+            return;
+        }
+
+        if (formData.registrationNumber.length < 5) {
+            toast.error("Please enter a valid registration number.");
+            return;
+        }
+
+        if (formData.moveInDate < new Date().toISOString().split("T")[0]) {
+            toast.error("Move-in date cannot be in the past.");
+            return;
+        }
+
+        if (
+            formData.paymentMethod === "M-Pesa" &&
+            !/^\d{10}$/.test(formData.mpesaPhone)
+        ) {
+            toast.error("Please enter a valid 10-digit M-Pesa phone number.");
+            return;
+        }
+
+        if (
+            formData.paymentMethod === "M-Pesa" &&
+            !/^[A-Z0-9]{6,10}$/.test(formData.mpesaCode)
+        ) {
+            toast.error("Please enter a valid M-Pesa transaction code.");
+            return;
+        }
+
+        const token = localStorage.getItem("authToken");
+
+        if (!token) {
+            toast.error("Please log in before making a booking.");
+            return;
+        }
+
+        const bookingData = {
+            hostel: selectedHostel.id,
+            full_name: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+            national_id: formData.nationalId,
+            gender: formData.gender,
+            university: formData.university,
+            registration_number: formData.registrationNumber,
+            room_type: formData.roomType,
+            move_in_date: formData.moveInDate,
+            payment_method:
+                formData.paymentMethod === "M-Pesa" ? "Mpesa" : "Bank",
+            mpesa_phone:
+                formData.paymentMethod === "M-Pesa"
+                    ? formData.mpesaPhone
+                    : "",
+            payment_reference:
+                formData.paymentMethod === "M-Pesa"
+                    ? formData.mpesaCode
+                    : formData.bankReference,
+        };
+
+        try {
+            const response = await fetch(
+                `${API_BASE_URL}/api/hostels/bookings/`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Token ${token}`,
+                    },
+                    body: JSON.stringify(bookingData),
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                const errorMessage = Object.values(data).flat().join(" ");
+                toast.error(errorMessage || "Booking failed.");
+                return;
+            }
+
+            toast.success("Your booking request has been submitted!");
+            onBookingComplete(data);
+        } catch {
+            toast.error("Unable to connect to the server.");
+        }
     }
-}
 
-return (
-    <form className="booking-form" onSubmit={handleSubmit}>
-        <h2>Student Information</h2>
-        <div className="form-group">
-            <label>Full Name</label>
-            <input type="text" name="fullName" value={formData.fullName}
-            onChange={handleChange} placeholder="Enter your full name" required/>
-        </div>
-         <div className="form-group">
-            <label>Email Address</label>
-            <input type="email" name="email" value={formData.email}
-            onChange={handleChange} placeholder="example@email.com" required/>
-        </div>
-         <div className="form-group">
-            <label>Phone Number</label>
-            <input type="tel" name="phone" value={formData.phone}
-            onChange={handleChange} placeholder="07XXXXXXXX" required/>
-        </div>
-         <div className="form-group">
-            <label>National ID/Passport</label>
-            <input type="text" name="nationalId" value={formData.nationalId}
-            onChange={handleChange} placeholder="Enter your ID or passport Number"
-             required/>
-        </div>
-        <div className="form-group">
-            <label>Gender</label>
-            <select name="gender" value={formData.gender} onChange={handleChange}  required>
-            <option value="">Select Gender</option>
-            <option>Male</option>
-            <option>Female</option>
-            </select>
-        </div>
-        <div className="form-group">
-            <label>University</label>
-            <input type="text" name="university" value={formData.university}
-            onChange={handleChange} placeholder="e.g Moi University"
-             required/>
-        </div>
-        <div className="form-group">
-            <label>Registration Number</label>
-            <input type="text" name="registrationNumber" value={formData.registrationNumber}
-            onChange={handleChange} placeholder="e.g. SIT/1234/26"
-             required/>
-        </div>
-        <hr/>
-        <h2>Booking Details</h2>
-        <div className="form-group">
-            <label>Selected Hostel</label>
-             <input type="text" name="hostel" value={formData.hostel}
-             readOnly/>
-        </div>
-         {selectedHostel &&(
+    return (
+        <form className="booking-form" onSubmit={handleSubmit}>
+            <section className="booking-section">
+                <h2>Student Information</h2>
 
-            <div className="selected-hostel">
-                <h3>Selected Hostel</h3>
-                <p><strong>Monthly Rent:</strong>Ksh{selectedHostel.price}</p>
-                <p><strong>Location:</strong>{selectedHostel.location}</p>
-                <p><strong>Distance:</strong>{selectedHostel.distance}</p>
-                <p><strong>Available Rooms:</strong>{selectedHostel.availability}</p>
+                <div className="booking-fields">
+                    <div className="form-group">
+                        <label>Full Name</label>
+                        <input
+                            type="text"
+                            name="fullName"
+                            value={formData.fullName}
+                            onChange={handleChange}
+                            placeholder="Enter your full name"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Email Address</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="example@email.com"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Phone Number</label>
+                        <input
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            placeholder="07XXXXXXXX"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>National ID / Passport</label>
+                        <input
+                            type="text"
+                            name="nationalId"
+                            value={formData.nationalId}
+                            onChange={handleChange}
+                            placeholder="Enter your ID or passport number"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Gender</label>
+                        <select
+                            name="gender"
+                            value={formData.gender}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label>University</label>
+                        <input
+                            type="text"
+                            name="university"
+                            value={formData.university}
+                            onChange={handleChange}
+                            placeholder="e.g. Moi University"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Registration Number</label>
+                        <input
+                            type="text"
+                            name="registrationNumber"
+                            value={formData.registrationNumber}
+                            onChange={handleChange}
+                            placeholder="e.g. SIT/1234/26"
+                            required
+                        />
+                    </div>
+                </div>
+            </section>
+
+            <section className="booking-section">
+                <h2>Booking Details</h2>
+
+                {selectedHostel ? (
+                    <div className="selected-hostel">
+                        <h3>{selectedHostel.name}</h3>
+                        <div className="selected-hostel-info">
+                            <p><strong>Monthly Rent:</strong> Ksh {selectedHostel.price}</p>
+                            <p><strong>Location:</strong> {selectedHostel.location}</p>
+                            <p><strong>Distance:</strong> {selectedHostel.distance}</p>
+                            <p><strong>Available Rooms:</strong> {selectedHostel.availability}</p>
+                        </div>
+                    </div>
+                ) : (
+                    <p className="booking-warning">
+                        Please select a hostel from the hostels page before booking.
+                    </p>
+                )}
+
+                <div className="booking-fields">
+                    <div className="form-group">
+                        <label>Room Type</label>
+                        <select
+                            name="roomType"
+                            value={formData.roomType}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Select Room Type</option>
+                            <option value="Single">Single</option>
+                            <option value="Shared">Shared</option>
+                        </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Move-in Date</label>
+                        <input
+                            type="date"
+                            name="moveInDate"
+                            value={formData.moveInDate}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                </div>
+            </section>
+
+            <section className="booking-section">
+                <h2>Payment Details</h2>
+
+                <div className="form-group">
+                    <label>Payment Method</label>
+                    <select
+                        name="paymentMethod"
+                        value={formData.paymentMethod}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="">Select Payment Method</option>
+                        <option value="M-Pesa">M-Pesa</option>
+                        <option value="Bank">Bank</option>
+                    </select>
+                </div>
+
+                {formData.paymentMethod === "M-Pesa" && (
+                    <div className="payment-fields">
+                        <div className="form-group">
+                            <label>M-Pesa Phone Number</label>
+                            <input
+                                type="tel"
+                                name="mpesaPhone"
+                                value={formData.mpesaPhone}
+                                onChange={handleChange}
+                                placeholder="07XXXXXXXX"
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>M-Pesa Transaction Code</label>
+                            <input
+                                type="text"
+                                name="mpesaCode"
+                                value={formData.mpesaCode}
+                                onChange={handleChange}
+                                placeholder="e.g. QWE123ABC"
+                                required
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {formData.paymentMethod === "Bank" && (
+                    <>
+                        <div className="bank-details">
+                            <h3>Bank Payment Information</h3>
+                            <p><strong>Bank:</strong> Equity Bank</p>
+                            <p><strong>Account Name:</strong> HostelHub Limited</p>
+                            <p><strong>Account Number:</strong> 3425637890</p>
+                            <p><strong>Branch:</strong> Eldoret</p>
+                        </div>
+
+                        <div className="form-group">
+                            <label>Bank Transaction Reference</label>
+                            <input
+                                type="text"
+                                name="bankReference"
+                                value={formData.bankReference}
+                                onChange={handleChange}
+                                placeholder="Enter transaction reference"
+                                required
+                            />
+                        </div>
+                    </>
+                )}
+            </section>
+
+            <div className="booking-confirmation">
+                <label><input type="checkbox" required />I confirm that the information above is correct and I agreeto Pambazuka's booking terms.</label>
             </div>
-         )}
-        <div className="form-group">
-            <label>Room Type</label>
-            <select name="roomType" value={formData.roomType} onChange={handleChange}  required>
-            <option value="">Select Room Type</option>
-            <option>Single</option>
-            <option>Shared</option>
-            </select>
-        </div>
-        <div className="form-group">
-            <label>Move-in Date</label>
-            <input type="date" name="moveInDate" value={formData.moveInDate}
-            onChange={handleChange} required/>
-        </div>
-        <hr/>
-        <h2>Payment Details</h2>
-        <div className="form-group">
-            <label>Payment Method</label>
-            <select name="paymentMethod" value={formData.paymentMethod}
-            onChange={handleChange} placeholder="e.g. SIT/1234/26"
-             required>
-            <option value="">Select Payment Method</option>
-            <option value="M-Pesa">M-Pesa</option>
-            <option value="Bank">Bank</option>
-             </select>
-        </div>
-        {formData.paymentMethod ==="M-Pesa" &&(
-            <>
-            <div className="form-group">
-            <label>M-Pesa Phone Number</label>
-            <input type="tel" name="mpesaPhone" value={formData.mpesaPhone}
-            onChange={handleChange} placeholder="07XXXXXXXX"
-             required/>
-        </div>
-        <div className="form-group">
-            <label>M-Pesa Transaction Code</label>
-            <input type="text" name="mpesaCode" value={formData.mpesaCode}
-            onChange={handleChange} placeholder="e.g QWE123ABC"
-             required/>
-        </div>
-            </>
-        )}
-         {formData.paymentMethod ==="Bank" &&(
-            <>
-            <div className="bank-details">
-                <h3>Bank Details</h3>
-                <p><strong>Bank:</strong>Equity Bank</p>
-                <p><strong>Account Name:</strong>HostelHub Limited</p>
-                <p><strong>Account Number:</strong>3425637890</p>
-                <p><strong>Branch:</strong>Eldoret</p>
-            </div>
-            <div className="form-group">
-            <label>Bank Transcation Reference</label>
-            <input type="text" name="bankReference" value={formData.bankReference}
-            onChange={handleChange} placeholder="Enter transaction reference"
-             required/>
-        </div>
 
-            </>
-        )}
-        <div className="form-group checkbox-group">
-            <label><input type="checkbox" required/>{""}I confirm that the information above is correct
-            and I agree to Pambazuka's booking terms.</label>
-        </div>
-       <button type="submit" className="confirm-btn">Confirm Booking</button>
-
-
-    </form>
-);
+            <button type="submit" className="confirm-btn">Confirm Booking</button>
+        </form>
+    );
 }
 
 export default BookingForm;
