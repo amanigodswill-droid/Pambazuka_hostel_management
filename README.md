@@ -147,11 +147,9 @@ Ensure that the following are installed:
 ### A. Clone the Repository
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+git clone https://github.com/amanigodswill-droid/Pambazuka_hostel_management
 cd Pambazuka_hostel_management
 ```
-
-Replace `YOUR_GITHUB_REPOSITORY_URL` with the actual GitHub repository URL.
 
 ### B. Backend Setup
 
