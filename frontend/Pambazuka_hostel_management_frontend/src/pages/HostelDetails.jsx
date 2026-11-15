@@ -11,19 +11,20 @@ function HostelDetails() {
     const [selectedImage, setSelectedImage] = useState("");
 
     if (loading) {
-        return <h2>Loading hostel details...</h2>;
+        return <main className="details-page"><h2>Loading hostel details...</h2></main>;
     }
 
     if (error) {
-        return <h2>{error}</h2>;
+        return <main className="details-page"><h2>{error}</h2></main>;
     }
 
     if (!hostel) {
-        return <h2>Hostel not found.</h2>;
+        return <main className="details-page"><h2>Hostel not found.</h2></main>;
     }
 
     const images = hostelImages[hostel.id] || {};
     const coverImage = hostel.cover_image || images.cover || "";
+
     const galleryImages = [
         { image: coverImage, label: "Cover" },
         { image: images.exteriorWithParking, label: "Exterior" },
@@ -32,67 +33,120 @@ function HostelDetails() {
         { image: images.laundryArea, label: "Laundry" },
     ].filter((item) => item.image);
 
+    const activeImage = selectedImage || coverImage;
+
     return (
         <main className="details-page">
-            {coverImage ? (
-                <img src={selectedImage || coverImage} alt={hostel.name} className="details-image"/>
-            ) : (
-                <div className="details-image">No cover image available.</div>
-            )}
-
-            <div className="image-gallery">
-                {galleryImages.map((item, index) => (
-                    <div className="gallery-item" key={index} onClick={() => setSelectedImage(item.image)}>
-                        <img src={item.image} alt={item.label} />
-                        <span>{item.label}</span>
-                    </div>
-                ))}
+            <div className="details-heading">
+                <Link to="/hostels" className="details-back-link">
+                    &larr; Back to Hostels
+                </Link>
+                <h1>{hostel.name}</h1>
+                <p>{hostel.location}</p>
             </div>
 
-            <div className="details-content">
-                <h1>{hostel.name}</h1>
+            <section className="details-gallery-section">
+                {activeImage ? (
+                    <img
+                        src={activeImage}
+                        alt={hostel.name}
+                        className="details-image"
+                    />
+                ) : (
+                    <div className="details-image no-cover">
+                        No cover image available.
+                    </div>
+                )}
+
+                {galleryImages.length > 1 && (
+                    <div className="image-gallery">
+                        {galleryImages.map((item, index) => (
+                            <button
+                                type="button"
+                                className={`gallery-item ${
+                                    activeImage === item.image ? "selected" : ""
+                                }`}
+                                key={index}
+                                onClick={() => setSelectedImage(item.image)}
+                                aria-label={`View ${item.label} image`}
+                            >
+                                <img src={item.image} alt="" />
+                                <span>{item.label}</span>
+                            </button>
+                        ))}
+                    </div>
+                )}
+            </section>
+
+            <section className="details-content">
+                <div className="details-summary">
+                    <div>
+                        <span className="details-label">MONTHLY RENT</span>
+                        <h2>Ksh {hostel.price}</h2>
+                    </div>
+                    <Link to="/booking" state={{ hostel }} className="book-btn">
+                        Book This Hostel
+                    </Link>
+                </div>
+
+                <h3>Hostel Information</h3>
 
                 <div className="details-grid">
                     <div className="detail-card">
-                        <h4>Location</h4>
-                        <p>{hostel.location}</p>
+                        <span>Location</span>
+                        <strong>{hostel.location}</strong>
+                    </div>
 
-                        <h4>Monthly Rent</h4>
-                        <p>Ksh {hostel.price}</p>
+                    <div className="detail-card">
+                        <span>Gender</span>
+                        <strong>{hostel.gender}</strong>
+                    </div>
 
-                        <h4>Gender</h4>
-                        <p>{hostel.gender}</p>
-
-                        <h4>Rooms</h4>
-                        <p>
+                    <div className="detail-card">
+                        <span>Room Options</span>
+                        <strong>
                             {hostel.rooms === "Both"
                                 ? "Single and Shared"
                                 : hostel.rooms}
-                        </p>
+                        </strong>
+                    </div>
 
-                        <h4>Availability</h4>
-                        <p>{hostel.availability} Rooms Available</p>
+                    <div className="detail-card">
+                        <span>Availability</span>
+                        <strong>{hostel.availability} Rooms</strong>
+                    </div>
 
-                        <h4>Distance</h4>
-                        <p>{hostel.distance}</p>
+                    <div className="detail-card">
+                        <span>Distance</span>
+                        <strong>{hostel.distance}</strong>
                     </div>
                 </div>
 
-                <h3>Description</h3>
-                <p>{hostel.description}</p>
-
-                <h3>Amenities</h3>
-                <ul>
-                    {hostel.amenities.map((item, index) => (
-                        <li key={index}>{item}</li>
-                    ))}
-                </ul>
-
-                <div className="button-group">
-                    <Link to="/booking" state={{ hostel }} className="book-btn">Book Now</Link>
-                    <Link to="/hostels" className="back-btn">Back to Hostels</Link>
+                <div className="details-description">
+                    <h3>About This Hostel</h3>
+                    <p>{hostel.description || "No description available."}</p>
                 </div>
-            </div>
+
+                <div className="details-amenities">
+                    <h3>Amenities and Facilities</h3>
+
+                    {hostel.amenities && hostel.amenities.length > 0 ? (
+                        <ul>
+                            {hostel.amenities.map((item, index) => (
+                                <li key={index}>{item}</li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No amenities have been listed yet.</p>
+                    )}
+                </div>
+
+                <div className="details-bottom">
+                    <Link to="/hostels" className="back-btn">
+                        Back to Hostels
+                    </Link>
+                </div>
+            </section>
         </main>
     );
 }
