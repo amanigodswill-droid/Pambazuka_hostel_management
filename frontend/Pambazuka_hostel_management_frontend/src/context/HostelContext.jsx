@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { HostelContext } from "./HostelContext";
 import API_BASE_URL from "../api";
-import sampleHostels from "../data/hostels";
 
 function HostelProvider({ children }) {
-    const [hostels, setHostels] = useState(sampleHostels);
+    const [hostels, setHostels] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -16,11 +15,12 @@ function HostelProvider({ children }) {
                 return response.json();
             })
             .then((data) => {
-                setHostels(data.length > 0 ? data : sampleHostels);
+                setHostels(Array.isArray(data) ? data : []);
                 setLoading(false);
             })
-            .catch(() => {
-                setHostels(sampleHostels);
+            .catch((error) => {
+                console.error("Error fetching hostels:", error);
+                setHostels([]);
                 setLoading(false);
             });
     }, []);

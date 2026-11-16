@@ -86,4 +86,4 @@ export const hostelImages = {
     },
 };
  
-export default Hostels;
+export default hostelImages;
