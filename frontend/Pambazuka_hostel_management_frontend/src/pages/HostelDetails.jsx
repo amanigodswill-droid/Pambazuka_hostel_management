@@ -22,17 +22,17 @@ function HostelDetails() {
         return <main className="details-page"><h2>Hostel not found.</h2></main>;
     }
 
-    const images = hostelImages[hostel.id] || {};
-    const coverImage = hostel.cover_image || images.cover || "";
+    const images = hostel.image || hostelImages[hostel.id] || {};
 
     const galleryImages = [
-        { image: coverImage, label: "Cover" },
-        { image: images.exteriorWithParking, label: "Exterior" },
-        { image: images.bathrooms, label: "Bathroom" },
+        { image: hostel.cover_image || images.cover, label: "Cover" },
+        { image: images.exteriorWithParking, label: "Exterior and Parking" },
+        { image: images.bathrooms, label: "Bathrooms" },
         { image: images.kitchenSpace, label: "Kitchen" },
-        { image: images.laundryArea, label: "Laundry" },
+        { image: images.laundryArea, label: "Laundry Area" },
     ].filter((item) => item.image);
 
+    const coverImage = galleryImages[0]?.image || "";
     const activeImage = selectedImage || coverImage;
 
     return (
@@ -70,7 +70,7 @@ function HostelDetails() {
                                 onClick={() => setSelectedImage(item.image)}
                                 aria-label={`View ${item.label} image`}
                             >
-                                <img src={item.image} alt="" />
+                                <img src={item.image} alt={item.label} />
                                 <span>{item.label}</span>
                             </button>
                         ))}
@@ -105,7 +105,7 @@ function HostelDetails() {
                     <div className="detail-card">
                         <span>Room Options</span>
                         <strong>
-                            {hostel.rooms === "Both"
+                            {hostel.rooms === "Both" || hostel.rooms === "Single and Shared"
                                 ? "Single and Shared"
                                 : hostel.rooms}
                         </strong>
@@ -129,7 +129,6 @@ function HostelDetails() {
 
                 <div className="details-amenities">
                     <h3>Amenities and Facilities</h3>
-
                     {hostel.amenities && hostel.amenities.length > 0 ? (
                         <ul>
                             {hostel.amenities.map((item, index) => (

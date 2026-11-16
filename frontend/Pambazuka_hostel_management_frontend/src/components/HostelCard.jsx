@@ -31,7 +31,7 @@ function HostelCard({ hostel }) {
         toast.success("Hostel added to favorites.");
     }
 
-    const hostelImage = hostel.cover_image || hostelImages[hostel.id]?.cover;
+    const hostelImage = hostel.cover_image ||hostel.image?.cover || hostelImages[hostel.id]?.cover;
 
     return (
         <div className="hostel-card">

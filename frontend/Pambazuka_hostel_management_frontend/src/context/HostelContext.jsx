@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { HostelContext } from "./HostelContext";
 import API_BASE_URL from "../api";
+import sampleHostels from "../data/hostels";
 
 function HostelProvider({ children }) {
-    const [hostels, setHostels] = useState([]);
+    const [hostels, setHostels] = useState(sampleHostels);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
 
     useEffect(() => {
         fetch(`${API_BASE_URL}/api/hostels/`)
@@ -15,12 +15,18 @@ function HostelProvider({ children }) {
                 }
                 return response.json();
             })
-            .then((data) => {setHostels(data); setLoading(false);})
-            .catch((error) => {setError(error.message); setLoading(false);});
+            .then((data) => {
+                setHostels(data.length > 0 ? data : sampleHostels);
+                setLoading(false);
+            })
+            .catch(() => {
+                setHostels(sampleHostels);
+                setLoading(false);
+            });
     }, []);
 
     return (
-        <HostelContext.Provider value={{ hostels, loading, error }}>
+        <HostelContext.Provider value={{ hostels, loading, error: "" }}>
             {children}
         </HostelContext.Provider>
     );
