@@ -136,8 +136,18 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'noreply@pambazukahostel.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = os.environ.get('amanigodswill@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('shljdkjwkygtlxoz')
+
+DEFAULT_FROM_EMAIL = os.environ.get(
+    'amanigodswill@gmail.com',
+    EMAIL_HOST_USER
+)
 
 CORS_ALLOWED_ORIGINS = ["http://localhost:5173", "https://pambazuka-hostel-management.vercel.app", "https://pambazuka-hostel-management-352c8aftb-g-amani.vercel.app",]
 CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://pambazuka-hostel-management-[a-z0-9-]+-g-amani\.vercel\.app$",]
