@@ -22,8 +22,7 @@ function HostelDetails() {
         return <main className="details-page"><h2>Hostel not found.</h2></main>;
     }
 
-    const images = hostel.image || hostelImages[hostel.id] || {};
-
+    const images = {...hostelImages[Number(hostel.id)], ...(hostel.image || {}),};
     const galleryImages = [
         { image: hostel.cover_image || images.cover, label: "Cover" },
         { image: images.exteriorWithParking, label: "Exterior and Parking" },
