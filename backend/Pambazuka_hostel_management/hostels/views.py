@@ -108,6 +108,7 @@ def login_user(request):
             user = None
 
     if user:
+        print("LOGIN USER EMAIL:", user.email)
         token, created = Token.objects.get_or_create(user=user)
 
         return Response({
@@ -455,10 +456,7 @@ def request_password_reset(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    user = User.objects.filter(
-        email__iexact=email,
-        is_active=True
-    ).first()
+    user = User.objects.filter(email__iexact=email).first()
 
     if not user:
         return Response(
