@@ -15,7 +15,7 @@
 }
 
 .auth-card h1{
-    color:#174541;
+    color:#1e3a8a;
     text-align:center;
     margin-bottom:10px;
 }
@@ -47,7 +47,7 @@
 }
 
 .form-group input:focus {
-  border-color:#174541;
+  border-color:#2563eb;
   outline:none;
   box-shadow:0 0 6px rgba(37,99,235,.2);
 }
@@ -73,13 +73,13 @@
 }
 
 .toggle-password:hover {
-  color:#174541;
+  color:#2563eb;
 }
 
 .auth-btn {
     width:100%;
     padding:14px;
-    background:#174541;
+    background:#2563eb;
     color:#fff;
     border:none;
     border-radius:8px;
@@ -91,7 +91,7 @@
 }
 
 .auth-btn:hover{
-    background:#10332f;
+    background:#1d4ed8;
 }
 
 .auth-link {
@@ -100,20 +100,26 @@
 }
 
 .auth-link a{
-    color:#174541;
+    color:#2563eb;
     font-weight:600;
 }
 
 .forgot-link {
-    display:block;
-    margin-top:15px;
-    text-align:right;
-    color:#174541;
-    font-size:.95rem;
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 15px;
+    text-align: right;
+    font-size: 14px;
 }
 
-.forgot-link:hover{
-    text-decoration:underline;
+.forgot-link a {
+    color: #174541;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.forgot-link a:hover {
+    text-decoration: underline;
 }
 
 .register-page,
@@ -144,7 +150,7 @@
 .forgot-form h1,
 .verify-form h1{
     text-align:center;
-    color:#174541;
+    color:#1e3a8a;
     margin-bottom:25px;
 }
 
@@ -176,7 +182,7 @@
 .forgot-form input:focus,
 .verify-form input:focus{
     outline:none;
-    border-color:#174541;
+    border-color:#2563eb;
     box-shadow:0 0 5px rgba(37,99,235,.2);
 }
 
@@ -187,7 +193,7 @@
     width:100%;
     margin-top:20px;
     padding:14px;
-    background:#174541;
+    background:#2563eb;
     color:white;
     border:none;
     border-radius:8px;
@@ -201,7 +207,7 @@
 .login-btn:hover,
 .reset-btn:hover,
 .verify-btn:hover{
-    background:#10332f;
+    background:#1d4ed8;
 }
 
 .register-form p,
@@ -216,7 +222,7 @@
 .login-form a,
 .forgot-form a,
 .verify-form a{
-    color:#174541;
+    color:#2563eb;
     font-weight:600;
 }
 
@@ -248,5 +254,5 @@
 }
 
 .password-wrapper .toggle-password:hover {
-    color: #174541;
+    color: #2563eb;
 }
