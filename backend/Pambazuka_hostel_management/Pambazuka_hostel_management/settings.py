@@ -140,3 +140,4 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'noreply@pambazukahostel.com'
 
 CORS_ALLOWED_ORIGINS = ["http://localhost:5173", "https://pambazuka-hostel-management.vercel.app", "https://pambazuka-hostel-management-352c8aftb-g-amani.vercel.app",]
+CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://pambazuka-hostel-management-[a-z0-9-]+-g-amani\.vercel\.app$",]
