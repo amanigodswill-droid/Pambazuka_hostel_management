@@ -1,4 +1,3 @@
-
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate
@@ -10,6 +9,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.db.models import Q
 
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import (
@@ -445,7 +445,6 @@ def manage_hostel(request, pk):
         hostel.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
 @api_view(['POST'])
 def request_password_reset(request):
     email = request.data.get('email', '').strip()
@@ -456,12 +455,21 @@ def request_password_reset(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    user = User.objects.filter(email__iexact=email).first()
+    user = User.objects.filter(
+        Q(email__iexact=email) | Q(username__iexact=email),
+        is_active=True
+    ).first()
 
     if not user:
         return Response(
-            {'error': 'No active account found with that email address.'},
+            {'error': 'Account not found. Please check your login email.'},
             status=status.HTTP_404_NOT_FOUND
+        )
+
+    if not user.email:
+        return Response(
+            {'error': 'This account has no registered email address. Please contact support.'},
+            status=status.HTTP_400_BAD_REQUEST
         )
 
     uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -483,7 +491,6 @@ def request_password_reset(request):
     return Response({
         'message': 'Password reset email sent successfully.'
     })
-
 
 @api_view(['POST'])
 def reset_password(request):
