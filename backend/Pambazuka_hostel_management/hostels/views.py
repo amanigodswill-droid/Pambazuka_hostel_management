@@ -1,3 +1,4 @@
+import logging
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate
@@ -20,6 +21,7 @@ from .models import Hostel, Booking
 from .serializers import HostelSerializer, BookingSerializer
 from .user_serializer import RegisterSerializer
 
+logger = logging.getLogger(__name__)
 
 @api_view(['GET'])
 def hostel_list(request):
