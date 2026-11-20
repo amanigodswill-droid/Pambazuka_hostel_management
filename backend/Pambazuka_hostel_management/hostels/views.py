@@ -2,6 +2,8 @@ import requests
 import os
 import logging
 
+from django.utils.crypto import constant_time_compare
+from rest_framework.permissions import AllowAny
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate
@@ -591,3 +593,56 @@ def owner_bookings(request):
 
     serializer = BookingSerializer(bookings, many=True)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def repair_hostel_owner(request):
+    expected_secret = os.environ.get("PAMBAZUKA_OWNER_REPAIR_SECRET")
+    supplied_secret = request.data.get("secret", "")
+
+    if not expected_secret or not constant_time_compare(
+        supplied_secret, expected_secret
+    ):
+        return Response(
+            {"error": "Unauthorized request."},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    try:
+        with transaction.atomic():
+            user = User.objects.get(
+                email__iexact="amanigodswill@gmail.com"
+            )
+
+            hostel = Hostel.objects.select_for_update().get(
+                name__iexact="Green View Hostel"
+            )
+
+            if hostel.owner_id is not None and hostel.owner_id != user.id:
+                return Response(
+                    {"error": "This hostel is already assigned to another account."},
+                    status=status.HTTP_409_CONFLICT
+                )
+
+            hostel.owner = user
+            hostel.save(update_fields=["owner"])
+
+        return Response({
+            "message": "Hostel ownership successfully verified.",
+            "hostel": hostel.name,
+            "owner_email": user.email,
+            "owner_id": user.id
+        })
+
+    except User.DoesNotExist:
+        return Response(
+            {"error": "Owner account not found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    except Hostel.DoesNotExist:
+        return Response(
+            {"error": "Green View Hostel not found."},
+            status=status.HTTP_404_NOT_FOUND
+        )

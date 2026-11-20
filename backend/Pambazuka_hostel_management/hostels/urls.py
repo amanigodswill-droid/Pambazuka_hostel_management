@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import hostel_list, my_hostels, hostel_detail, register_user, login_user, student_profile, create_booking, cancel_booking, manage_booking, manage_payment, create_hostel, manage_hostel, request_password_reset, reset_password, owner_bookings
+from .views import hostel_list, my_hostels, hostel_detail, register_user, login_user, student_profile, create_booking, cancel_booking, manage_booking, manage_payment, create_hostel, manage_hostel, request_password_reset, reset_password, owner_bookings, repair_hostel_owner
 
 urlpatterns = [
     path("", hostel_list, name='hostel-list'),
@@ -17,5 +17,6 @@ urlpatterns = [
     path("password-reset/", request_password_reset, name="password-reset"),
     path("password-reset/confirm/", reset_password, name="password-reset-confirm"),
     path("owner/bookings/", owner_bookings, name="owner-bookings"),
+    path("owner/bookings/<int:pk>/repair/", repair_hostel_owner, name="repair-hostel-owner"),
 
 ]
