@@ -4,6 +4,7 @@ import { HashRouter } from "react-router-dom";
 import "./styles/Global.css";
 import App from "./App.jsx";
 import HostelProvider from "./context/HostelContext.jsx";
+import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

@@ -15,7 +15,7 @@
 }
 
 .auth-card h1{
-    color:#1e3a8a;
+    color:#174541;
     text-align:center;
     margin-bottom:10px;
 }
@@ -47,7 +47,7 @@
 }
 
 .form-group input:focus {
-  border-color:#2563eb;
+  border-color:#174541;
   outline:none;
   box-shadow:0 0 6px rgba(37,99,235,.2);
 }
@@ -73,13 +73,13 @@
 }
 
 .toggle-password:hover {
-  color:#2563eb;
+  color:#174541;
 }
 
 .auth-btn {
     width:100%;
     padding:14px;
-    background:#2563eb;
+    background:#174541;
     color:#fff;
     border:none;
     border-radius:8px;
@@ -91,7 +91,7 @@
 }
 
 .auth-btn:hover{
-    background:#1d4ed8;
+    background:#10332f;
 }
 
 .auth-link {
@@ -100,7 +100,7 @@
 }
 
 .auth-link a{
-    color:#2563eb;
+    color:#174541;
     font-weight:600;
 }
 
@@ -150,7 +150,7 @@
 .forgot-form h1,
 .verify-form h1{
     text-align:center;
-    color:#1e3a8a;
+    color:#174541;
     margin-bottom:25px;
 }
 
@@ -182,7 +182,7 @@
 .forgot-form input:focus,
 .verify-form input:focus{
     outline:none;
-    border-color:#2563eb;
+    border-color:#174541;
     box-shadow:0 0 5px rgba(37,99,235,.2);
 }
 
@@ -193,7 +193,7 @@
     width:100%;
     margin-top:20px;
     padding:14px;
-    background:#2563eb;
+    background:#174541;
     color:white;
     border:none;
     border-radius:8px;
@@ -207,7 +207,7 @@
 .login-btn:hover,
 .reset-btn:hover,
 .verify-btn:hover{
-    background:#1d4ed8;
+    background:#10332f;
 }
 
 .register-form p,
@@ -222,7 +222,7 @@
 .login-form a,
 .forgot-form a,
 .verify-form a{
-    color:#2563eb;
+    color:#174541;
     font-weight:600;
 }
 
@@ -254,5 +254,5 @@
 }
 
 .password-wrapper .toggle-password:hover {
-    color: #2563eb;
+    color: #174541;
 }
