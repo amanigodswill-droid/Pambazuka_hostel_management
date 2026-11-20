@@ -17,6 +17,6 @@ urlpatterns = [
     path("password-reset/", request_password_reset, name="password-reset"),
     path("password-reset/confirm/", reset_password, name="password-reset-confirm"),
     path("owner/bookings/", owner_bookings, name="owner-bookings"),
-    path("owner/bookings/<int:pk>/repair/", repair_hostel_owner, name="repair-hostel-owner"),
+    path("repair-hostel-owner/", repair_hostel_owner, name="repair-hostel-owner"),
 
 ]
