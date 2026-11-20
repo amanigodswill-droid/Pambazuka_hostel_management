@@ -10,18 +10,12 @@ from django.conf import settings
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.db.models import Q
-
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import (
-    api_view,
-    authentication_classes,
-    permission_classes
-)
+from rest_framework.decorators import (api_view, authentication_classes, permission_classes)
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-
 from .models import Hostel, Booking
 from .serializers import HostelSerializer, BookingSerializer
 from .user_serializer import RegisterSerializer
@@ -445,6 +439,7 @@ def manage_hostel(request, pk):
         hostel.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 @api_view(['POST'])
 def request_password_reset(request):
     email = request.data.get('email', '').strip()
@@ -468,7 +463,7 @@ def request_password_reset(request):
 
     if not user.email:
         return Response(
-            {'error': 'This account has no registered email address. Please contact support.'},
+            {'error': 'This account has no registered email address.'},
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -476,17 +471,24 @@ def request_password_reset(request):
     token = default_token_generator.make_token(user)
 
     reset_link = (
-        f"https://pambazuka-hostel-management.vercel.app/"
+        "https://pambazuka-hostel-management.vercel.app/"
         f"#/reset-password?uid={uid}&token={token}"
     )
 
-    send_mail(
-        'Pambazuka Hostel Management Password Reset',
-        f'Use this link to reset your password: {reset_link}',
-        settings.DEFAULT_FROM_EMAIL,
-        [user.email],
-        fail_silently=False
-    )
+    try:
+        send_mail(
+            'Pambazuka Hostel Management Password Reset',
+            f'Use this link to reset your password: {reset_link}',
+            settings.DEFAULT_FROM_EMAIL,
+            [user.email],
+            fail_silently=False
+        )
+
+    except Exception:
+        return Response(
+            {'error': 'Unable to send password reset email. Please try again later.'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
     return Response({
         'message': 'Password reset email sent successfully.'
