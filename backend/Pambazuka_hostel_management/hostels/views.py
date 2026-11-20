@@ -1,3 +1,5 @@
+import os
+import resend
 import logging
 from django.db import transaction
 from django.shortcuts import get_object_or_404
@@ -6,8 +8,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from django.core.mail import send_mail
-from django.conf import settings
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.db.models import Q
@@ -441,7 +441,6 @@ def manage_hostel(request, pk):
         hostel.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
 @api_view(['POST'])
 def request_password_reset(request):
     email = request.data.get('email', '').strip()
@@ -478,15 +477,24 @@ def request_password_reset(request):
     )
 
     try:
-        send_mail(
-            'Pambazuka Hostel Management Password Reset',
-            f'Use this link to reset your password: {reset_link}',
-            settings.DEFAULT_FROM_EMAIL,
-            [user.email],
-            fail_silently=False
-        )
+        resend.api_key = os.environ.get("RESEND_API_KEY")
+
+        if not resend.api_key:
+            raise ValueError("RESEND_API_KEY is not configured.")
+
+        resend.Emails.send({
+            "from": "Pambazuka <onboarding@resend.dev>",
+            "to": [user.email],
+            "subject": "Pambazuka Hostel Management Password Reset",
+            "text": (
+                "You requested a password reset for your Pambazuka account.\n\n"
+                f"Use this link to reset your password:\n{reset_link}\n\n"
+                "If you did not request this, ignore this email."
+            )
+        })
 
     except Exception:
+        logger.exception("Password reset email delivery failed")
         return Response(
             {'error': 'Unable to send password reset email. Please try again later.'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
