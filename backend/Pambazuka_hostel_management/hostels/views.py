@@ -1,6 +1,7 @@
+import requests
 import os
-import resend
 import logging
+
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate
@@ -11,17 +12,25 @@ from django.core.exceptions import ValidationError
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.db.models import Q
+
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import (api_view, authentication_classes, permission_classes)
+from rest_framework.decorators import (
+    api_view,
+    authentication_classes,
+    permission_classes
+)
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+
 from .models import Hostel, Booking
 from .serializers import HostelSerializer, BookingSerializer
 from .user_serializer import RegisterSerializer
 
+
 logger = logging.getLogger(__name__)
+
 
 @api_view(['GET'])
 def hostel_list(request):
@@ -381,7 +390,7 @@ def manage_payment(request, pk):
         booking.save(update_fields=['payment_status'])
 
     return Response({
-        'message': f'Payment marked as {new_status.lower()}.',
+        'message': f'Payment marked as {new_status.lower()} successfully.',
         'booking_id': booking.id,
         'payment_status': booking.payment_status
     })
@@ -441,6 +450,7 @@ def manage_hostel(request, pk):
         hostel.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 @api_view(['POST'])
 def request_password_reset(request):
     email = request.data.get('email', '').strip()
@@ -477,21 +487,36 @@ def request_password_reset(request):
     )
 
     try:
-        resend.api_key = os.environ.get("RESEND_API_KEY")
+        script_url = os.environ.get("GOOGLE_APPS_SCRIPT_URL")
+        secret = os.environ.get("PAMBAZUKA_SECRET")
 
-        if not resend.api_key:
-            raise ValueError("RESEND_API_KEY is not configured.")
-
-        resend.Emails.send({
-            "from": "Pambazuka <onboarding@resend.dev>",
-            "to": [user.email],
-            "subject": "Pambazuka Hostel Management Password Reset",
-            "text": (
-                "You requested a password reset for your Pambazuka account.\n\n"
-                f"Use this link to reset your password:\n{reset_link}\n\n"
-                "If you did not request this, ignore this email."
+        if not script_url or not secret:
+            raise ValueError(
+                "Google email service is not configured."
             )
-        })
+
+        response = requests.post(
+            script_url,
+            json={
+                "secret": secret,
+                "email": user.email,
+                "subject": "Pambazuka Hostel Management Password Reset",
+                "message": (
+                    "You requested a password reset for your Pambazuka account.\n\n"
+                    f"Use this link to reset your password:\n{reset_link}\n\n"
+                    "If you did not request this, ignore this email."
+                )
+            },
+            timeout=30
+        )
+
+        response.raise_for_status()
+        result = response.json()
+
+        if not result.get("success"):
+            raise ValueError(
+                result.get("error", "Email delivery failed.")
+            )
 
     except Exception:
         logger.exception("Password reset email delivery failed")
@@ -503,6 +528,7 @@ def request_password_reset(request):
     return Response({
         'message': 'Password reset email sent successfully.'
     })
+
 
 @api_view(['POST'])
 def reset_password(request):
